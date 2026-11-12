@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexicon · PDF Reader & Arabic Translator — by Mr. Moayed Alkhliefat</title>
+<meta name="description" content="Read any PDF and get instant English→Arabic translations and meanings. Designed by Mr. Moayed Alkhliefat.">
+<meta name="author" content="Mr. Moayed Alkhliefat">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --navy:#16213e; --navy2:#1f2d55; --paper:#f7f4ec; --card:#ffffff; --ink:#1c2434; --muted:#6b7385; --line:#e6e1d4;
+  --indigo:#4f46e5; --teal:#0e9384; --amber:#e8930c; --coral:#e5484d; --violet:#7c3aed; --sky:#0284c7; --gold:#c9a227;
+  --indigo-s:#eef0ff; --teal-s:#e3f6f3; --amber-s:#fff4e0; --coral-s:#ffecec; --violet-s:#f3edff;
+  --shadow:0 12px 32px rgba(22,33,62,.14),0 2px 6px rgba(22,33,62,.08);
+  --soft:0 1px 2px rgba(22,33,62,.06),0 4px 14px rgba(22,33,62,.06);
+  --hl:rgba(79,70,229,.30);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Inter,system-ui,sans-serif;color:var(--ink);font-size:15px;background:var(--paper);
+  background-image:radial-gradient(rgba(22,33,62,.035) 1px,transparent 1px);background-size:18px 18px}
+button{font:inherit;cursor:pointer}
+input,select{font:inherit}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;letter-spacing:-.01em}
+.ar{font-family:Amiri,"Tajawal",serif;direction:rtl;unicode-bidi:isolate}
+.ar-ui{font-family:Tajawal,sans-serif;direction:rtl;unicode-bidi:isolate}
+.hidden{display:none!important}
+
+/* ---------- Sidebar ---------- */
+.side{position:fixed;inset:0 auto 0 0;width:248px;z-index:30;color:#dfe5f5;display:flex;flex-direction:column;
+  background:linear-gradient(185deg,var(--navy) 0%,var(--navy2) 70%,#2a2f6b 100%)}
+.logo{display:flex;gap:12px;align-items:center;padding:22px 20px 18px}
+.logo .mark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;
+  background:conic-gradient(from 210deg,var(--teal),var(--indigo),var(--violet),var(--coral),var(--amber),var(--teal))}
+.logo .mark span{width:34px;height:34px;border-radius:9px;background:var(--navy);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:700;color:#fff;font-size:19px}
+.logo b{display:block;font-family:Fraunces,serif;font-size:21px;color:#fff;letter-spacing:.01em}
+.logo small{display:block;font-size:12px;color:#9aa6c7;margin-top:1px}
+.nav{padding:8px 12px;display:flex;flex-direction:column;gap:4px}
+.nav button{display:flex;align-items:center;gap:12px;border:none;background:transparent;color:#c9d2ea;padding:10px 12px;border-radius:10px;font-size:14.5px;font-weight:500;text-align:left}
+.nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav button.active{background:rgba(255,255,255,.11);color:#fff}
+.nav .dot{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px;flex:none}
+.nav .lab{flex:1}
+.nav .lab small{display:block;font-family:Tajawal,sans-serif;font-size:12px;color:#8f9bbd;font-weight:400}
+.side .credit{margin:auto 14px 16px;padding:14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.credit .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8f9bbd}
+.credit .n{font-family:Fraunces,serif;font-size:16px;color:#fff;margin-top:3px}
+
+/* ---------- Main ---------- */
+.main{margin-left:248px;min-height:100vh;display:flex;flex-direction:column}
+.view{display:none;flex:1}
+.view.show{display:block}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 28px 40px}
+.pagehead{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.pagehead h1{font-size:30px}
+.pagehead .sub{color:var(--muted);margin-top:4px}
+.pagehead .ar-ui{color:var(--muted);font-size:15px}
+.spacer{flex:1}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+.btn:hover{border-color:#cfc8b6;background:#fffdf8}
+.btn.pri{background:var(--indigo);border-color:var(--indigo);color:#fff}
+.btn.pri:hover{filter:brightness(1.08)}
+.btn.teal{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.ghost{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.24)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--soft)}
+.panel-h{display:flex;align-items:center;gap:10px;padding:16px 18px 6px}
+.panel-h h3{font-size:18px;flex:1}
+.panel-b{padding:8px 18px 18px}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}
+
+/* ---------- Dashboard ---------- */
+.hero{position:relative;overflow:hidden;border-radius:22px;color:#fff;padding:30px 32px;margin-bottom:22px;
+  background:linear-gradient(120deg,#3730a3 0%,#4f46e5 35%,#0e9384 100%);box-shadow:var(--shadow)}
+.hero h1{font-size:32px;line-height:1.15;max-width:620px}
+.hero .arline{font-family:Amiri,serif;font-size:22px;opacity:.95;margin-top:6px;direction:rtl;text-align:left}
+.hero p{max-width:560px;line-height:1.55;opacity:.92;margin:10px 0 18px}
+.hero .by{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:rgba(0,0,0,.18);border-radius:99px;padding:6px 14px 6px 6px;font-size:13.5px}
+.hero .by .av{width:28px;height:28px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;font-family:Fraunces,serif}
+.hero .by b{font-weight:600}
+.hero svg.deco{position:absolute;right:-20px;top:-10px;height:115%;opacity:.9;pointer-events:none}
+.hero .acts{display:flex;gap:10px;flex-wrap:wrap}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.stat{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:var(--soft)}
+.stat::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--c)}
+.stat .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:var(--cs);color:var(--c)}
+.stat .v{font-family:Fraunces,serif;font-size:32px;font-weight:700;margin-top:10px;color:var(--ink)}
+.stat .l{font-size:13.5px;color:var(--muted)}
+.stat .l .ar-ui{display:block;font-size:13px}
+
+.grid2{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;margin-bottom:18px}
+.docs{display:flex;flex-direction:column;gap:10px}
+.doc{display:flex;align-items:center;gap:14px;padding:12px;border-radius:14px;border:1px solid var(--line);background:#fffdf8;cursor:pointer;text-align:left;width:100%}
+.doc:hover{border-color:var(--indigo);background:var(--indigo-s)}
+.doc .thumb{width:40px;height:50px;border-radius:6px;flex:none;display:grid;place-items:center;color:#fff;font-size:11px;font-weight:700;letter-spacing:.04em}
+.doc .meta{flex:1;min-width:0}
+.doc .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc .sm{font-size:12.5px;color:var(--muted);margin-top:2px}
+.bar{height:6px;border-radius:99px;background:#ece7da;margin-top:7px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px}
+.doc .x{border:none;background:transparent;color:var(--muted);border-radius:8px;width:30px;height:30px}
+.doc .x:hover{background:#fff;color:var(--coral)}
+.emptyline{color:var(--muted);text-align:center;padding:22px 10px;line-height:1.6}
+.dropmini{border:2px dashed #d8d1bf;border-radius:14px;padding:16px;text-align:center;color:var(--muted);margin-top:10px;font-size:14px}
+.dropmini.over,.bigdrop.over{border-color:var(--indigo);background:var(--indigo-s);color:var(--indigo)}
+
+.chart svg{width:100%;height:auto;display:block}
+.wotd{border-radius:16px;padding:18px;background:linear-gradient(135deg,var(--amber-s),#fff 70%);border:1px solid #f3dfb8}
+.wotd .w{font-family:Fraunces,serif;font-size:30px;font-weight:700}
+.wotd .a{font-family:Amiri,serif;font-size:28px;color:var(--amber);direction:rtl}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;font-size:13.5px;display:inline-flex;gap:7px;align-items:center}
+.chip:hover{border-color:var(--teal);color:var(--teal)}
+.chip .ar{color:var(--muted);font-size:15px}
+
+/* ---------- Reader ---------- */
+.rbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 20px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.rbar .docname{font-family:Fraunces,serif;font-weight:600;font-size:16px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.zgroup{display:flex;align-items:center;gap:4px;background:#f4f1e8;border-radius:10px;padding:3px}
+.zgroup button{border:none;background:transparent;width:30px;height:30px;border-radius:8px;font-size:17px}
+.zgroup button:hover{background:#fff}
+.zgroup span{min-width:46px;text-align:center;font-size:13px;color:var(--muted)}
+.pinfo{font-size:13px;color:var(--muted);white-space:nowrap}
+.qlook{display:flex;gap:6px;margin-left:auto}
+.qlook input{border:1px solid var(--line);border-radius:10px;padding:7px 11px;width:210px;background:#fff}
+.qlook input:focus,.field input:focus,.search:focus{outline:3px solid var(--indigo-s);border-color:var(--indigo)}
+.hint{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding:10px 16px 0;font-size:13px;color:var(--muted)}
+.hint b{color:var(--ink)}
+#viewer{padding:16px 12px 90px}
+.page{position:relative;margin:0 auto 20px;background:#fff;box-shadow:0 2px 6px rgba(22,33,62,.10),0 10px 26px rgba(22,33,62,.07);border-radius:3px}
+.page canvas{display:block;width:100%;height:100%;border-radius:3px}
+.page .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a8a28f;font-size:13px}
+.page .scan{position:absolute;left:0;right:0;bottom:0;padding:8px;text-align:center;font-size:12.5px;background:var(--amber-s);color:#8a5a00}
+.bigdrop{max-width:720px;margin:6vh auto;padding:46px 30px;border:2px dashed #d3cbb6;border-radius:22px;background:#fffdf8;text-align:center}
+.bigdrop h2{font-size:28px}
+.bigdrop .ar{font-size:21px;color:var(--muted);margin:6px 0 4px}
+.bigdrop p{color:var(--muted);line-height:1.55}
+.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px;text-align:left}
+.howto div{border-radius:14px;padding:14px;font-size:13.5px;color:#475066;line-height:1.45}
+.howto b{display:block;color:var(--ink);font-size:14.5px;margin-bottom:4px}
+
+/* pdf.js text layer */
+.textLayer{position:absolute;inset:0;overflow:hidden;line-height:1;text-align:initial;-webkit-text-size-adjust:none;text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;z-index:2}
+.textLayer span,.textLayer br{color:transparent;position:absolute;white-space:pre;cursor:text;transform-origin:0% 0%}
+.textLayer ::selection{background:var(--hl)}
+.textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:-1;cursor:default;user-select:none}
+.textLayer.selecting .endOfContent{top:0}
+
+/* ---------- Popup card ---------- */
+#tchip{position:absolute;z-index:45;display:none;border:none;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:600;color:#fff;
+  background:linear-gradient(120deg,var(--indigo),var(--teal));box-shadow:var(--shadow)}
+#card{position:absolute;z-index:50;width:min(410px,calc(100vw - 20px));display:none;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+#card.wide{width:min(560px,calc(100vw - 20px))}
+.ch{display:flex;align-items:flex-start;gap:6px;padding:14px 14px 10px 18px;background:linear-gradient(120deg,var(--indigo-s),var(--teal-s));border-bottom:1px solid var(--line)}
+.ch .hw{font-family:Fraunces,serif;font-size:24px;font-weight:700;line-height:1.15;word-break:break-word}
+.ch .ph2{font-size:13.5px;color:var(--muted);margin-top:3px}
+.ib{border:none;background:transparent;border-radius:9px;width:34px;height:34px;display:inline-grid;place-items:center;color:#525b70;font-size:16px;flex:none}
+.ib:hover{background:rgba(255,255,255,.8);color:var(--ink)}
+.ib.saved{color:var(--amber)}
+.cb{padding:12px 18px 16px;max-height:56vh;overflow:auto}
+.sec{margin-top:12px}.sec:first-child{margin-top:0}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.lbl .ar-ui{letter-spacing:0;font-weight:500;text-transform:none;font-size:12.5px}
+.arbig{font-family:Amiri,serif;direction:rtl;text-align:right;font-size:30px;font-weight:700;color:var(--indigo);line-height:1.4;background:var(--indigo-s);border-radius:12px;padding:8px 14px}
+.alts{display:flex;flex-wrap:wrap;gap:6px;direction:rtl;margin-top:7px}
+.alts span{font-family:Amiri,serif;font-size:17px;background:#f6f3ea;border-radius:99px;padding:1px 11px}
+.pos{display:inline-block;font-size:12px;font-style:italic;font-weight:600;color:var(--teal);background:var(--teal-s);border-radius:6px;padding:1px 7px;margin-bottom:4px}
+.defs{margin:0 0 6px;padding-left:20px;line-height:1.5}
+.defs li{margin-bottom:4px}
+.defs .eg{display:block;color:#5c6478;font-style:italic;font-size:13.5px}
+.ctxbox{border-left:3px solid var(--teal);background:#fbfaf6;padding:8px 12px;border-radius:0 10px 10px 0;line-height:1.5;font-size:14px;color:#3d4559}
+.ctxbox mark{background:#fff0c2;padding:0 2px;border-radius:3px}
+.arpara{font-family:Amiri,serif;direction:rtl;text-align:right;font-size:20px;line-height:1.85;background:var(--teal-s);border-radius:12px;padding:10px 14px;color:#0b3d38}
+.loading{display:flex;align-items:center;gap:10px;color:var(--muted);padding:6px 0}
+.spin{width:16px;height:16px;border:2px solid #ddd6c5;border-top-color:var(--indigo);border-radius:50%;animation:sp .8s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err{color:var(--coral);line-height:1.5;font-size:14px}
+.src{font-size:11.5px;color:#9a9483;margin-top:12px}
+.linkbtn{border:none;background:none;color:var(--indigo);font-weight:600;padding:0;font-size:13.5px}
+.linkbtn:hover{text-decoration:underline}
+
+/* ---------- Vocabulary ---------- */
+.toolrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:min(320px,100%);background:#fff}
+table.vt{width:100%;border-collapse:separate;border-spacing:0}
+.vt th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:700;padding:10px 12px;border-bottom:2px solid var(--line);background:#fbf9f3}
+.vt td{padding:11px 12px;border-bottom:1px solid #efeadf;vertical-align:top;line-height:1.45}
+.vt tr:hover td{background:#fffdf7}
+.vt .w{font-weight:700;font-size:15.5px}
+.vt .p{font-size:12.5px;color:var(--teal);font-style:italic}
+.vt .a{font-family:Amiri,serif;font-size:20px;direction:rtl;text-align:right;color:var(--indigo);white-space:nowrap}
+.vt .d{color:#4a5266;font-size:14px;max-width:420px}
+.lvl{font-size:11.5px;border-radius:99px;padding:2px 8px;font-weight:600;white-space:nowrap}
+
+/* ---------- Flashcards ---------- */
+.fc-wrap{max-width:620px;margin:0 auto}
+.fc{perspective:1400px;height:330px;cursor:pointer;margin:10px 0 18px}
+.fc-in{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.fc.flip .fc-in{transform:rotateY(180deg)}
+.fc-f,.fc-b{position:absolute;inset:0;border-radius:24px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center;box-shadow:var(--shadow)}
+.fc-f{background:linear-gradient(140deg,#4338ca,#6d28d9);color:#fff}
+.fc-f .w{font-family:Fraunces,serif;font-size:44px;font-weight:700}
+.fc-f .p{opacity:.85;margin-top:6px}
+.fc-f .tap{position:absolute;bottom:16px;font-size:12.5px;opacity:.7}
+.fc-b{background:#fff;transform:rotateY(180deg);border:1px solid var(--line)}
+.fc-b .a{font-family:Amiri,serif;font-size:42px;color:var(--teal);direction:rtl;font-weight:700}
+.fc-b .d{color:#4a5266;margin-top:10px;line-height:1.5;max-width:460px}
+.fc-acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fc-prog{text-align:center;color:var(--muted);font-size:13.5px;margin-top:6px}
+.btn.good{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.again{background:var(--coral-s);border-color:#f6c6c7;color:#b42318}
+
+/* ---------- Settings ---------- */
+.setgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer}
+.opt:has(input:checked){border-color:var(--indigo);background:var(--indigo-s)}
+.opt input{margin-top:3px;accent-color:var(--indigo)}
+.opt b{display:block}
+.opt span{font-size:13.5px;color:var(--muted);line-height:1.45}
+.field{margin:12px 0}
+.field label{display:block;font-weight:600;font-size:13.5px;margin-bottom:5px}
+.field input[type=text],.field input[type=email],.field input[type=password]{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}
+.field small{display:block;color:var(--muted);margin-top:5px;line-height:1.45;font-size:12.5px}
+.testout{margin-top:10px;font-size:14px}
+
+/* ---------- Login & user ---------- */
+.me{margin:auto 14px 10px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.me .av{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--teal),var(--indigo))}
+.me .nm{flex:1;min-width:0;font-size:14px;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.me .nm small{display:block;font-weight:400;color:#9aa6c7;font-size:12px}
+.me button{border:none;background:rgba(255,255,255,.1);color:#dfe5f5;border-radius:8px;padding:5px 9px;font-size:12px}
+.me button:hover{background:rgba(255,255,255,.2)}
+.side .credit{margin-top:0}
+#login{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
+  background:radial-gradient(circle at 20% 15%,rgba(14,147,132,.55),transparent 45%),radial-gradient(circle at 85% 80%,rgba(124,58,237,.5),transparent 45%),linear-gradient(140deg,#16213e,#2a2f6b)}
+#login.show{display:flex}
+.lbox{width:min(440px,100%);background:#fff;border-radius:24px;padding:32px 30px 24px;box-shadow:0 30px 80px rgba(0,0,0,.35);text-align:center}
+.lbox .mark{width:58px;height:58px;margin:0 auto 14px;border-radius:16px;display:grid;place-items:center;background:conic-gradient(from 210deg,var(--teal),var(--indigo),var(--violet),var(--coral),var(--amber),var(--teal))}
+.lbox .mark span{width:46px;height:46px;border-radius:12px;background:var(--navy);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:700;color:#fff;font-size:25px}
+.lbox h1{font-size:28px}
+.lbox .ar{font-size:20px;color:var(--muted);margin:4px 0 18px}
+.lbox input{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;text-align:center}
+.lbox input:focus{outline:none;border-color:var(--indigo)}
+.lbox .btn.pri{width:100%;justify-content:center;padding:12px;font-size:16px;margin-top:12px}
+.lbox .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+.lbox .by{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.lbox .by b{font-family:Fraunces,serif;color:var(--ink)}
+.sync{font-size:12px;color:#9aa6c7}
+/* ---------- Teacher ---------- */
+.tlock{max-width:420px;margin:6vh auto;text-align:center}
+.tlock input{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px;font-size:20px;text-align:center;letter-spacing:.3em;margin:14px 0 10px}
+.tlock input:focus{outline:none;border-color:var(--indigo)}
+.vt .act{white-space:nowrap}
+.sdetail{margin-top:18px}
+
+/* ---------- Footer, toast ---------- */
+footer{border-top:1px solid var(--line);padding:16px 28px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:13px;background:rgba(255,255,255,.5)}
+footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:9px 16px;border-radius:10px;font-size:13.5px;z-index:90;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1060px){ .stats{grid-template-columns:repeat(2,1fr)} .grid2,.setgrid{grid-template-columns:1fr} .hero svg.deco{opacity:.35} }
+@media (max-width:860px){
+  .me{display:none}
+  .side{inset:auto 0 0 0;width:auto;height:64px;flex-direction:row;z-index:40}
+  .logo,.side .credit{display:none}
+  .nav{flex-direction:row;flex:1;justify-content:space-around;padding:6px}
+  .nav button{flex-direction:column;gap:2px;padding:4px 6px;font-size:11px}
+  .nav .lab small{display:none}
+  .nav .dot{width:26px;height:26px}
+  .main{margin-left:0;padding-bottom:64px}
+  .wrap{padding:18px 14px 30px}
+  .hero{padding:22px}
+  .hero h1{font-size:25px}
+  .howto{grid-template-columns:1fr}
+  .qlook{margin-left:0;width:100%}.qlook input{flex:1}
+  .vt .d{display:none}
+}
+</style>
+</head>
+<body>
+
+<aside class="side">
+  <div class="logo">
+    <div class="mark"><span>L</span></div>
+    <div><b>Lexicon</b><small>PDF Reader · Arabic</small></div>
+  </div>
+  <nav class="nav" id="nav">
+    <button data-view="dashboard"><span class="dot" style="background:rgba(79,70,229,.25)">◧</span><span class="lab">Dashboard<small>لوحة التحكم</small></span></button>
+    <button data-view="reader"><span class="dot" style="background:rgba(14,147,132,.28)">📖</span><span class="lab">Reader<small>القارئ</small></span></button>
+    <button data-view="vocabulary"><span class="dot" style="background:rgba(232,147,12,.28)">★</span><span class="lab">My Words<small>كلماتي</small></span></button>
+    <button data-view="flashcards"><span class="dot" style="background:rgba(124,58,237,.3)">🃏</span><span class="lab">Flashcards<small>البطاقات</small></span></button>
+    <button data-view="settings"><span class="dot" style="background:rgba(229,72,77,.28)">⚙</span><span class="lab">Settings<small>الإعدادات</small></span></button>
+  </nav>
+  <div class="me hidden" id="meBox"><div class="av" id="meAv">?</div><div class="nm"><span id="meName"></span><small class="sync" id="syncState">Saved online</small></div><button id="signOut">Sign out</button></div>
+  <div class="credit">
+    <div class="k">Designed by</div>
+    <div class="n">Mr. Moayed Alkhliefat</div>
+  </div>
+</aside>
+
+<div class="main">
+
+  <!-- ================= DASHBOARD ================= -->
+  <section class="view" id="v-dashboard">
+    <div class="wrap">
+      <div class="hero">
+        <svg class="deco" viewBox="0 0 400 300" fill="none" aria-hidden="true">
+          <g stroke="rgba(255,255,255,.35)" stroke-width="1.5">
+            <ellipse cx="270" cy="140" rx="110" ry="38" transform="rotate(25 270 140)"/>
+            <ellipse cx="270" cy="140" rx="110" ry="38" transform="rotate(-35 270 140)"/>
+            <ellipse cx="270" cy="140" rx="110" ry="38" transform="rotate(85 270 140)"/>
+          </g>
+          <circle cx="270" cy="140" r="14" fill="rgba(255,255,255,.9)"/>
+          <circle cx="362" cy="182" r="7" fill="#fcd34d"/><circle cx="205" cy="62" r="6" fill="#5eead4"/><circle cx="250" cy="250" r="6" fill="#fda4af"/>
+          <g transform="translate(150 190)" stroke="rgba(255,255,255,.75)" stroke-width="2" fill="rgba(255,255,255,.12)">
+            <path d="M0 12 Q35 0 70 12 V70 Q35 58 0 70Z"/><path d="M70 12 Q105 0 140 12 V70 Q105 58 70 70Z"/>
+          </g>
+        </svg>
+        <span class="tag" style="background:rgba(255,255,255,.18)" id="heroHello">Read · Understand · Learn</span>
+        <h1 style="margin-top:12px">Read any PDF and understand every word</h1>
+        <div class="arline">اقرأ أي ملف PDF وافهم كل كلمة بالعربية</div>
+        <p>Double‑click a word to see its Arabic translation and English meaning. Select a sentence to translate it into Arabic. Save new words and revise them with flashcards.</p>
+        <div class="acts">
+          <button class="btn" data-open style="background:#fff;color:var(--indigo);border-color:#fff">📂 Open a PDF</button>
+          <button class="btn ghost" data-go="flashcards">🃏 Review flashcards</button>
+        </div>
+        <div class="by"><span class="av">M</span><span>Designed by <b>Mr. Moayed Alkhliefat</b></span></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat" style="--c:var(--indigo);--cs:var(--indigo-s)"><div class="ic">🔍</div><div class="v" id="sLook">0</div><div class="l">Words looked up<span class="ar-ui">كلمات بحثت عنها</span></div></div>
+        <div class="stat" style="--c:var(--teal);--cs:var(--teal-s)"><div class="ic">🌐</div><div class="v" id="sPass">0</div><div class="l">Sentences translated<span class="ar-ui">جمل مترجمة</span></div></div>
+        <div class="stat" style="--c:var(--amber);--cs:var(--amber-s)"><div class="ic">★</div><div class="v" id="sSaved">0</div><div class="l">Words saved<span class="ar-ui">كلمات محفوظة</span></div></div>
+        <div class="stat" style="--c:var(--coral);--cs:var(--coral-s)"><div class="ic">📚</div><div class="v" id="sDocs">0</div><div class="l">PDFs opened<span class="ar-ui">ملفات مفتوحة</span></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <div class="panel-h"><h3>Continue reading</h3><span class="ar-ui" style="color:var(--muted)">تابع القراءة</span></div>
+          <div class="panel-b">
+            <div class="docs" id="docList"></div>
+            <div class="dropmini" id="dropMini">Drop a PDF here, or <button class="linkbtn" data-open>browse your files</button></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h3>This week</h3><span class="ar-ui" style="color:var(--muted)">نشاط الأسبوع</span></div>
+          <div class="panel-b chart" id="chart"></div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <div class="panel-h"><h3>Recently looked up</h3><span class="ar-ui" style="color:var(--muted)">آخر الكلمات</span></div>
+          <div class="panel-b"><div class="chips" id="recentChips"></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h3>Word of the day</h3><span class="ar-ui" style="color:var(--muted)">كلمة اليوم</span></div>
+          <div class="panel-b"><div class="wotd" id="wotd"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= READER ================= -->
+  <section class="view" id="v-reader">
+    <div class="rbar">
+      <button class="btn pri" data-open>📂 Open PDF</button>
+      <span class="docname" id="docName"></span>
+      <div class="zgroup hidden" id="zoomGroup">
+        <button id="zOut" title="Zoom out">−</button><span id="zVal">100%</span><button id="zIn" title="Zoom in">+</button>
+      </div>
+      <span class="pinfo" id="pInfo"></span>
+      <form class="qlook" id="qlook">
+        <input id="qInput" placeholder="Type an English word or sentence…" autocomplete="off">
+        <button class="btn teal" type="submit">ترجم</button>
+      </form>
+    </div>
+    <div class="hint hidden" id="readHint"><span><b>Double‑click</b> a word → Arabic + meaning</span><span><b>Select</b> a sentence → translate</span><span><b>★</b> save words for flashcards</span></div>
+    <div class="bigdrop" id="bigDrop">
+      <h2>Open a PDF to start reading</h2>
+      <div class="ar">افتح ملف PDF لتبدأ القراءة</div>
+      <p>Drag and drop a file here, or choose one from your device.</p>
+      <button class="btn pri" data-open>Choose a PDF</button>
+      <div class="howto">
+        <div style="background:var(--indigo-s)"><b>① Double‑click a word</b>See the Arabic translation, English definition and pronunciation.</div>
+        <div style="background:var(--teal-s)"><b>② Select a sentence</b>Press “Translate” to read the whole sentence or paragraph in Arabic.</div>
+        <div style="background:var(--amber-s)"><b>③ Save & revise</b>Press ☆ to save a word, then practise it in Flashcards.</div>
+      </div>
+    </div>
+    <main id="viewer"></main>
+  </section>
+
+  <!-- ================= VOCABULARY ================= -->
+  <section class="view" id="v-vocabulary">
+    <div class="wrap">
+      <div class="pagehead">
+        <div><h1>My Words</h1><div class="sub">Words you saved while reading · <span class="ar-ui">الكلمات التي حفظتها</span></div></div>
+        <div class="spacer"></div>
+        <button class="btn" id="vCopy">⧉ Copy</button>
+        <button class="btn" id="vCsv">⬇ Export (Excel)</button>
+        <button class="btn" id="vClear">🗑 Clear</button>
+      </div>
+      <div class="toolrow">
+        <input class="search" id="vSearch" placeholder="Search English or Arabic…">
+        <span class="pinfo" id="vCount"></span>
+      </div>
+      <div class="panel" style="overflow:auto"><table class="vt" id="vTable"></table></div>
+    </div>
+  </section>
+
+  <!-- ================= FLASHCARDS ================= -->
+  <section class="view" id="v-flashcards">
+    <div class="wrap">
+      <div class="pagehead">
+        <div><h1>Flashcards</h1><div class="sub">Tap the card to see the Arabic · <span class="ar-ui">اضغط على البطاقة لترى الترجمة</span></div></div>
+        <div class="spacer"></div>
+        <button class="btn" id="fcShuffle">🔀 Shuffle</button>
+      </div>
+      <div class="fc-wrap" id="fcWrap"></div>
+    </div>
+  </section>
+
+  <!-- ================= SETTINGS ================= -->
+  <section class="view" id="v-settings">
+    <div class="wrap">
+      <div class="pagehead"><div><h1>Settings</h1><div class="sub">Translation service and preferences · <span class="ar-ui">خدمة الترجمة والتفضيلات</span></div></div></div>
+      <div class="setgrid">
+        <div class="panel">
+          <div class="panel-h"><h3>Translation service</h3></div>
+          <div class="panel-b">
+            <label class="opt"><input type="radio" name="engine" value="mymemory"><div><b>MyMemory (free)</b><span>No setup. About 5,000 characters a day per device — enough for hundreds of words. Add an email below for 50,000 a day.</span></div></label>
+            <label class="opt"><input type="radio" name="engine" value="google"><div><b>Google Cloud Translation</b><span>Best quality. Needs your own API key (free for the first 500,000 characters each month, then paid).</span></div></label>
+            <div class="field" id="fEmail"><label for="sEmail">Email for MyMemory (optional)</label><input type="email" id="sEmail" placeholder="you@example.com"><small>Raises the free daily limit to 50,000 characters. It is sent to MyMemory only.</small></div>
+            <div class="field" id="fKey"><label for="sKey">Google API key</label><input type="password" id="sKey" placeholder="AIza…"><small>Stored only in this browser. If you put this site online, restrict the key to your website's address in Google Cloud Console.</small></div>
+            <button class="btn pri" id="sTest">Test translation</button>
+            <div class="testout" id="sTestOut"></div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-h"><h3>Reading & voice</h3></div>
+          <div class="panel-b">
+            <div class="field"><label for="sRate">Pronunciation speed: <span id="sRateV">1.0</span>×</label><input type="range" id="sRate" min="0.6" max="1.3" step="0.1" style="width:100%;accent-color:var(--indigo)"></div>
+            <div class="field"><label><input type="checkbox" id="sAuto" style="accent-color:var(--indigo)"> Translate the sentence automatically when I look up a word</label><small>Uses a little more of the daily translation limit.</small></div>
+            <div class="field"><label>Your account</label><small>Signed in as <b id="sWho"></b>. Your saved words and progress are stored online, so they follow you on any device when you sign in with the same name. Recent PDFs stay on this device.</small></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="sSignOut">Sign out</button><button class="btn" id="sReset" style="color:var(--coral)">Delete my saved words</button><button class="btn" data-go="teacher">🎓 Teacher dashboard</button></div>
+          </div>
+          <div class="panel-h" style="padding-top:4px"><h3>About</h3></div>
+          <div class="panel-b" style="line-height:1.6;color:#4a5266">
+            <b style="font-family:Fraunces,serif;font-size:17px;color:var(--ink)">Lexicon — PDF Reader & Arabic Translator</b><br>
+            Designed by <b>Mr. Moayed Alkhliefat</b>.<br>
+            Definitions: Free Dictionary API · Translation: MyMemory / Google · PDF rendering: PDF.js (Mozilla).
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TEACHER ================= -->
+  <section class="view" id="v-teacher">
+    <div class="wrap">
+      <div class="tlock panel" id="tLock" style="padding:30px">
+        <div style="font-size:40px">🎓</div>
+        <h1 style="font-size:26px">Teacher dashboard</h1>
+        <div class="sub" style="color:var(--muted);margin-top:6px">Enter the teacher PIN to see your students' progress.</div>
+        <form id="tForm"><input type="password" id="tPin" inputmode="numeric" autocomplete="off" placeholder="••••••"><button class="btn pri" style="width:100%;justify-content:center" type="submit">Open dashboard</button></form>
+        <div class="err" id="tErr" style="margin-top:10px"></div>
+      </div>
+      <div id="tMain" class="hidden">
+        <div class="pagehead">
+          <div><h1>Teacher dashboard</h1><div class="sub">Your students' saved words and reading activity</div></div>
+          <div class="spacer"></div>
+          <button class="btn" id="tRefresh">↻ Refresh</button>
+          <button class="btn" id="tCsv">⬇ Export (Excel)</button>
+          <button class="btn" id="tLockBtn">🔒 Lock</button>
+        </div>
+        <div class="stats">
+          <div class="stat" style="--c:var(--indigo);--cs:var(--indigo-s)"><div class="ic">👩‍🎓</div><div class="v" id="tStu">0</div><div class="l">Students</div></div>
+          <div class="stat" style="--c:var(--teal);--cs:var(--teal-s)"><div class="ic">⚡</div><div class="v" id="tActive">0</div><div class="l">Active this week</div></div>
+          <div class="stat" style="--c:var(--amber);--cs:var(--amber-s)"><div class="ic">★</div><div class="v" id="tWords">0</div><div class="l">Words saved</div></div>
+          <div class="stat" style="--c:var(--coral);--cs:var(--coral-s)"><div class="ic">🔍</div><div class="v" id="tLooks">0</div><div class="l">Look‑ups & translations</div></div>
+        </div>
+        <div class="toolrow"><input class="search" id="tSearch" placeholder="Search students…"></div>
+        <div class="panel" style="overflow:auto"><table class="vt" id="tTable"></table></div>
+        <div class="panel sdetail hidden" id="tDetail"></div>
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-h"><h3>Change teacher PIN</h3></div>
+          <div class="panel-b"><form id="tPinForm" style="display:flex;gap:8px;flex-wrap:wrap">
+            <input class="search" type="password" id="tOld" placeholder="Current PIN" style="width:160px">
+            <input class="search" type="password" id="tNew" placeholder="New PIN (4+ characters)" style="width:220px">
+            <button class="btn pri" type="submit">Change PIN</button></form>
+            <div class="testout" id="tPinMsg"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>© <span id="yr"></span> <b>Lexicon</b> · Designed by <b>Mr. Moayed Alkhliefat</b></span>
+  </footer>
+</div>
+
+<div id="login">
+  <div class="lbox">
+    <div class="mark"><span>L</span></div>
+    <h1>Welcome to Lexicon</h1>
+    <div class="ar">أهلاً بك — اكتب اسمك للدخول</div>
+    <form id="loginForm">
+      <input id="loginName" placeholder="Your full name" autocomplete="name" maxlength="60">
+      <button class="btn pri" type="submit" id="loginBtn">Start reading →</button>
+    </form>
+    <div class="err" id="loginErr" style="margin-top:8px"></div>
+    <div class="note">Type your <b>full name</b> the same way every time — your saved words will be waiting for you on any device.</div>
+    <div class="note"><button class="linkbtn" id="toTeacher">🎓 I'm the teacher</button></div>
+    <div class="by">Designed by <b>Mr. Moayed Alkhliefat</b></div>
+  </div>
+</div>
+
+<input type="file" id="file" accept="application/pdf,.pdf" class="hidden">
+<button id="tchip">Translate</button>
+<div id="card"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today = () => new Date().toISOString().slice(0,10);
+$('yr').textContent = new Date().getFullYear();
+
+/* ================= online database (Supabase) ================= */
+const DB_URL = 'https://mbdhpuafmicowpfptzlz.supabase.co';
+const DB_KEY = 'sb_publishable_OSV-eM1W3ryYzyF35tnAKg_k1oTStxC';
+async function rpc(fn, args){
+  const r = await fetch(DB_URL + '/rest/v1/rpc/' + fn, { method:'POST', headers:{ 'apikey':DB_KEY, 'Content-Type':'application/json' }, body: JSON.stringify(args || {}) });
+  const txt = await r.text(); let j = null; try { j = txt ? JSON.parse(txt) : null; } catch(e){}
+  if (!r.ok) throw new Error((j && (j.message || j.hint)) || 'The server could not be reached. Check your internet connection.');
+  return j;
+}
+let pending = 0;
+function sync(fn, args){
+  pending++; setSync();
+  return rpc(fn, args).then(v => { pending--; setSync(); return v; })
+    .catch(e => { pending--; setSync(true); toast('Not saved online — check your internet connection'); throw e; });
+}
+function setSync(err){ const el = document.getElementById('syncState'); if (el) el.textContent = err ? '⚠ Not synced' : pending ? 'Saving…' : 'Saved online ✓'; }
+
+/* ================= storage ================= */
+const LS = {
+  get(k, d){ try { const v = localStorage.getItem('lex_' + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('lex_' + k, JSON.stringify(v)); } catch(e){} }
+};
+let settings = Object.assign({ engine:'mymemory', email:'', key:'', rate:1, autoSentence:false }, LS.get('settings', {}));
+let session = LS.get('session', null);   // {id, name}
+const uk = k => k + '_' + (session ? session.id : 'x');
+let words = [], stats = { lookups:0, passages:0, docs:0, daily:{} }, recent = [];
+function loadCache(){
+  words = LS.get(uk('words'), []);
+  stats = Object.assign({ lookups:0, passages:0, docs:0, daily:{} }, LS.get(uk('stats'), {}));
+  recent = LS.get(uk('recent'), []);
+}
+const saveSettings = () => LS.set('settings', settings);
+const saveWords = () => { LS.set(uk('words'), words); };
+function bump(kind){
+  stats[kind] = (stats[kind] || 0) + 1;
+  if (kind === 'lookups' || kind === 'passages') stats.daily[today()] = (stats.daily[today()] || 0) + 1;
+  const keys = Object.keys(stats.daily).sort(); while (keys.length > 60) delete stats.daily[keys.shift()];
+  LS.set(uk('stats'), stats);
+  if (session) sync('lex_log', { p_sid:session.id, p_kind:kind }).catch(() => {});
+}
+
+/* IndexedDB for recent PDFs */
+const IDB = {
+  db: null,
+  open(){
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise(res => {
+      try {
+        const r = indexedDB.open('lexicon-pdfs', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('docs', { keyPath:'id' });
+        r.onsuccess = () => { this.db = r.result; res(this.db); };
+        r.onerror = () => res(null);
+      } catch(e){ res(null); }
+    });
+  },
+  async tx(mode, fn){
+    const db = await this.open(); if (!db) return null;
+    return new Promise(res => {
+      try {
+        const t = db.transaction('docs', mode), s = t.objectStore('docs'); const out = fn(s);
+        t.oncomplete = () => res(out && typeof out === 'object' && 'result' in out ? out.result : true);
+        t.onerror = () => res(null);
+      } catch(e){ res(null); }
+    });
+  },
+  all(){ return this.tx('readonly', s => s.getAll()).then(r => (r || []).sort((a,b) => b.openedAt - a.openedAt)); },
+  get(id){ return this.tx('readonly', s => s.get(id)); },
+  put(rec){ return this.tx('readwrite', s => s.put(rec)); },
+  del(id){ return this.tx('readwrite', s => s.delete(id)); },
+  clear(){ return this.tx('readwrite', s => s.clear()); }
+};
+async function patchDoc(id, patch){
+  const rec = await IDB.get(id); if (!rec) return;
+  Object.assign(rec, patch); await IDB.put(rec);
+}
+
+/* ================= navigation ================= */
+const VIEWS = ['dashboard','reader','vocabulary','flashcards','settings','teacher'];
+function go(v){ if (location.hash !== '#' + v) location.hash = v; else show(v); }
+function show(v){
+  if (!VIEWS.includes(v)) v = 'dashboard';
+  VIEWS.forEach(n => $('v-' + n).classList.toggle('show', n === v));
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+  hideCard(); hideChip();
+  if (v === 'dashboard') renderDashboard();
+  if (v === 'vocabulary') renderVocab();
+  if (v === 'flashcards') startDeck(false);
+  if (v === 'settings') renderSettings();
+  if (v === 'teacher') openTeacher();
+  $('login').classList.toggle('show', !session && v !== 'teacher');
+  if (v !== 'reader') window.scrollTo(0,0);
+}
+window.addEventListener('hashchange', () => show(location.hash.slice(1)));
+document.querySelectorAll('#nav button').forEach(b => b.onclick = () => go(b.dataset.view));
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]'); if (g) go(g.dataset.go);
+  const o = e.target.closest('[data-open]'); if (o) $('file').click();
+});
+
+/* ================= translation & dictionary ================= */
+const tCache = new Map(), dCache = new Map();
+function chunkText(text, max){
+  const parts = text.match(/[^.!?;]+[.!?;]*\s*/g) || [text];
+  const out = []; let cur = '';
+  for (let p of parts) {
+    while (p.length > max) { const cut = p.lastIndexOf(' ', max) > 50 ? p.lastIndexOf(' ', max) : max; if (cur) { out.push(cur); cur=''; } out.push(p.slice(0,cut)); p = p.slice(cut); }
+    if ((cur + p).length > max) { out.push(cur); cur = p; } else cur += p;
+  }
+  if (cur.trim()) out.push(cur);
+  return out.map(s => s.trim()).filter(Boolean);
+}
+async function translate(text){
+  text = text.trim();
+  const key = settings.engine + '|' + text;
+  if (tCache.has(key)) return tCache.get(key);
+  let result;
+  if (settings.engine === 'google') {
+    if (!settings.key) throw new Error('Add your Google API key in Settings, or switch to MyMemory.');
+    const r = await fetch('https://translation.googleapis.com/language/translate/v2?key=' + encodeURIComponent(settings.key), {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ q:[text], source:'en', target:'ar', format:'text' })
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error((j.error && j.error.message) || 'Google translation failed (' + r.status + ').');
+    result = { main: j.data.translations[0].translatedText, alts: [] };
+  } else {
+    const chunks = chunkText(text, 480), outs = []; let alts = [];
+    for (const c of chunks) {
+      const url = 'https://api.mymemory.translated.net/get?langpair=en%7Car&q=' + encodeURIComponent(c) + (settings.email ? '&de=' + encodeURIComponent(settings.email) : '');
+      const r = await fetch(url);
+      const j = await r.json().catch(() => null);
+      const status = j && +j.responseStatus;
+      const t = j && j.responseData && j.responseData.translatedText || '';
+      if (!r.ok || !j || status === 429 || /MYMEMORY WARNING|QUOTA/i.test(t)) throw new Error('The free daily translation limit has been reached. Add an email in Settings to raise it, or try again tomorrow.');
+      if (status && status !== 200) throw new Error(j.responseDetails || 'Translation failed.');
+      outs.push(t);
+      if (chunks.length === 1 && Array.isArray(j.matches)) {
+        const seen = new Set([t.trim()]);
+        j.matches.forEach(m => {
+          const tr = String(m.translation || '').trim();
+          if (tr && !seen.has(tr) && /[؀-ۿ]/.test(tr) && !/[A-Za-z]{3,}/.test(tr) && tr.length < 60 && (m.segment || '').trim().toLowerCase() === c.toLowerCase()) { seen.add(tr); alts.push(tr); }
+        });
+      }
+    }
+    result = { main: outs.join(' '), alts: alts.slice(0,4) };
+  }
+  if (!/[؀-ۿ]/.test(result.main) && result.alts.length) result.main = result.alts.shift();
+  tCache.set(key, result);
+  return result;
+}
+function lemmas(w){
+  w = w.toLowerCase(); const c = [w];
+  const add = x => { if (x && x.length > 2 && !c.includes(x)) c.push(x); };
+  if (w.endsWith('ies')) add(w.slice(0,-3) + 'y');
+  if (w.endsWith('es')) add(w.slice(0,-2));
+  if (w.endsWith('s') && !w.endsWith('ss')) add(w.slice(0,-1));
+  if (w.endsWith('ied')) add(w.slice(0,-3) + 'y');
+  if (w.endsWith('ed')) { add(w.slice(0,-2)); add(w.slice(0,-1)); if (/(.)\1ed$/.test(w)) add(w.slice(0,-3)); }
+  if (w.endsWith('ing')) { add(w.slice(0,-3)); add(w.slice(0,-3) + 'e'); if (/(.)\1ing$/.test(w)) add(w.slice(0,-4)); }
+  if (w.endsWith('ly')) add(w.slice(0,-2));
+  return c.slice(0,6);
+}
+async function dictionary(term){
+  const k = term.toLowerCase();
+  if (dCache.has(k)) return dCache.get(k);
+  let entries = null, used = term;
+  for (const cand of lemmas(term)) {
+    try {
+      const r = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(cand));
+      if (r.ok) { entries = await r.json(); used = cand; break; }
+    } catch(e){ break; }
+  }
+  let res = null;
+  if (Array.isArray(entries) && entries.length) {
+    const phon = entries.map(e => e.phonetic).find(Boolean) || (entries.flatMap(e => e.phonetics || []).find(p => p.text) || {}).text || '';
+    const audio = (entries.flatMap(e => e.phonetics || []).find(p => p.audio) || {}).audio || '';
+    const byPos = {};
+    entries.forEach(e => (e.meanings || []).forEach(m => {
+      const p = m.partOfSpeech || ''; byPos[p] = byPos[p] || { pos:p, defs:[], syn:[] };
+      (m.definitions || []).forEach(d => byPos[p].defs.push({ d:d.definition, ex:d.example }));
+      byPos[p].syn.push(...(m.synonyms || []), ...((m.definitions || []).flatMap(d => d.synonyms || [])));
+    }));
+    const meanings = Object.values(byPos).slice(0,3).map(m => ({ pos:m.pos, defs:m.defs.slice(0,2), syn:[...new Set(m.syn)] }));
+    res = { headword: entries[0].word || used, phon, audio, meanings, syn:[...new Set(meanings.flatMap(m => m.syn))].slice(0,6) };
+  }
+  dCache.set(k, res);
+  return res;
+}
+function speak(text, audioUrl){
+  try {
+    if (audioUrl) { const a = new Audio(audioUrl); a.playbackRate = settings.rate; a.play().catch(() => tts(text)); return; }
+  } catch(e){}
+  tts(text);
+}
+function tts(text){
+  try {
+    if (!('speechSynthesis' in window)) { toast('Speech is not supported in this browser'); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = settings.rate;
+    speechSynthesis.speak(u);
+  } catch(e){}
+}
+
+/* ================= PDF reader ================= */
+let pdf = null, scale = 1.2, pages = [], observer = null, renderToken = 0, docId = null, saveTimer = null;
+if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+$('file').onchange = e => { const f = e.target.files[0]; if (f) openFile(f); e.target.value = ''; };
+function wireDrop(el){
+  if (!el) return;
+  el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('over'); });
+  el.addEventListener('dragleave', () => el.classList.remove('over'));
+  el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) openFile(f); });
+}
+wireDrop($('dropMini')); wireDrop($('bigDrop'));
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => { if (e.defaultPrevented) return; e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) openFile(f); });
+
+async function openFile(file){
+  if (!/pdf$/i.test(file.type) && !/\.pdf$/i.test(file.name)) { toast('Please choose a PDF file.'); return; }
+  const id = file.name + '|' + file.size;
+  const existing = await IDB.get(id);
+  const ok = await loadPdf(await file.arrayBuffer(), file.name, id, existing ? existing.lastPage : 1);
+  if (!ok) return;
+  if (!existing) bump('docs');
+  if (file.size < 60 * 1024 * 1024) {
+    await IDB.put({ id, name:file.name, size:file.size, pages:pdf.numPages, lastPage: existing ? existing.lastPage : 1, openedAt:Date.now(), blob:file });
+    const all = await IDB.all(); for (const r of all.slice(8)) await IDB.del(r.id);
+  }
+}
+async function openSaved(id){
+  const rec = await IDB.get(id);
+  if (!rec) { toast('This file is no longer stored. Please open it again.'); renderDashboard(); return; }
+  const ok = await loadPdf(await rec.blob.arrayBuffer(), rec.name, id, rec.lastPage || 1);
+  if (ok) patchDoc(id, { openedAt:Date.now() });
+}
+async function loadPdf(buf, name, id, startPage){
+  if (!window.pdfjsLib) { toast('The PDF library could not load. Check your internet connection.'); return false; }
+  hideCard(); hideChip();
+  try {
+    if (pdf) { try { pdf.destroy(); } catch(e){} }
+    pdf = await pdfjsLib.getDocument({ data:new Uint8Array(buf), isEvalSupported:false }).promise;
+  } catch (err) {
+    toast(err && err.name === 'PasswordException' ? 'This PDF is password‑protected.' : 'Could not open this PDF.');
+    return false;
+  }
+  docId = id;
+  go('reader');
+  $('docName').textContent = name.replace(/\.pdf$/i,'');
+  $('bigDrop').classList.add('hidden'); $('readHint').classList.remove('hidden'); $('zoomGroup').classList.remove('hidden');
+  const first = await pdf.getPage(1);
+  const vw = first.getViewport({ scale:1 }).width;
+  const sideW = window.innerWidth > 860 ? 248 : 0;
+  scale = Math.max(0.5, Math.min(1.6, Math.min(window.innerWidth - sideW - 40, 1000) / vw));
+  await buildPages();
+  if (startPage > 1 && pages[startPage]) { pages[startPage].div.scrollIntoView(); toast('Continuing from page ' + startPage); }
+  return true;
+}
+async function buildPages(){
+  const token = ++renderToken;
+  const viewer = $('viewer'); viewer.innerHTML = ''; pages = [];
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(es => { es.forEach(en => { if (en.isIntersecting) renderPage(+en.target.dataset.n); }); }, { rootMargin:'700px 0px' });
+  $('zVal').textContent = Math.round(scale * 100) + '%';
+  for (let n = 1; n <= pdf.numPages; n++) {
+    if (token !== renderToken) return;
+    const p = await pdf.getPage(n);
+    const vp = p.getViewport({ scale });
+    const div = document.createElement('div');
+    div.className = 'page'; div.dataset.n = n;
+    div.style.width = vp.width + 'px'; div.style.height = vp.height + 'px';
+    div.innerHTML = '<div class="ph">Page ' + n + '</div>';
+    viewer.appendChild(div);
+    pages[n] = { div, page:p, rendered:false };
+    observer.observe(div);
+  }
+  updatePageInfo();
+}
+async function renderPage(n){
+  const rec = pages[n]; if (!rec || rec.rendered) return;
+  rec.rendered = true;
+  const vp = rec.page.getViewport({ scale });
+  const ratio = Math.min(window.devicePixelRatio || 1, 2);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.floor(vp.width * ratio); canvas.height = Math.floor(vp.height * ratio);
+  try { await rec.page.render({ canvasContext:canvas.getContext('2d'), viewport:vp, transform: ratio !== 1 ? [ratio,0,0,ratio,0,0] : null }).promise; }
+  catch(e){ rec.rendered = false; return; }
+  rec.div.innerHTML = ''; rec.div.appendChild(canvas);
+  const tl = document.createElement('div'); tl.className = 'textLayer'; tl.style.setProperty('--scale-factor', scale);
+  rec.div.appendChild(tl);
+  try {
+    const tc = await rec.page.getTextContent();
+    rec.text = tc.items.map(i => i.str + (i.hasEOL ? ' ' : '')).join(' ').replace(/-\s+(?=[a-z])/g, '').replace(/\s+/g,' ');
+    await pdfjsLib.renderTextLayer({ textContentSource:tc, container:tl, viewport:vp, textDivs:[] }).promise;
+    const end = document.createElement('div'); end.className = 'endOfContent'; tl.appendChild(end);
+    tl.addEventListener('mousedown', () => tl.classList.add('selecting'));
+    if (!tc.items.length) {
+      const s = document.createElement('div'); s.className = 'scan';
+      s.textContent = 'This page is a scanned image, so words can’t be selected. Type the word in the box at the top instead.';
+      rec.div.appendChild(s);
+    }
+  } catch(e){}
+}
+document.addEventListener('mouseup', () => document.querySelectorAll('.textLayer.selecting').forEach(t => t.classList.remove('selecting')));
+function currentPage(){
+  const mid = window.innerHeight * 0.4; let cur = 1;
+  for (let n = 1; n < pages.length; n++) { const r = pages[n] && pages[n].div.getBoundingClientRect(); if (r && r.top < mid) cur = n; }
+  return cur;
+}
+function updatePageInfo(){
+  if (!pdf || !$('v-reader').classList.contains('show')) return;
+  const cur = currentPage();
+  $('pInfo').textContent = 'Page ' + cur + ' of ' + pdf.numPages;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { if (docId) patchDoc(docId, { lastPage:cur }); }, 800);
+}
+window.addEventListener('scroll', updatePageInfo, { passive:true });
+function rezoom(f){
+  if (!pdf) return;
+  const cur = currentPage();
+  scale = Math.max(0.5, Math.min(3, +(scale * f).toFixed(2)));
+  hideCard(); hideChip();
+  buildPages().then(() => pages[cur] && pages[cur].div.scrollIntoView());
+}
+$('zIn').onclick = () => rezoom(1.15); $('zOut').onclick = () => rezoom(1/1.15);
+
+/* ================= selection ================= */
+const chip = $('tchip'), card = $('card');
+const cleanTerm = s => s.replace(/­/g,'').replace(/-\s+(?=[a-z])/g,'').replace(/\s+/g,' ').trim().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'');
+const isPassage = t => t.split(' ').length > 4 || t.length > 45;
+function contextFor(sel, term){
+  const node = sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
+  const pageDiv = node && node.closest('.page');
+  const text = pageDiv && pages[+pageDiv.dataset.n] ? (pages[+pageDiv.dataset.n].text || '') : '';
+  if (!text) return '';
+  const span = node.closest('span');
+  const anchorText = span ? span.textContent.trim().slice(0, 30) : '';
+  const lower = text.toLowerCase(), t = term.toLowerCase();
+  let from = anchorText ? Math.max(0, lower.indexOf(anchorText.toLowerCase())) : 0;
+  let hit = lower.indexOf(t, from); if (hit < 0) hit = lower.indexOf(t);
+  if (hit < 0) return '';
+  const start = Math.max(0, hit - 240), endI = Math.min(text.length, hit + t.length + 240);
+  const before = text.slice(start, hit), after = text.slice(hit, endI);
+  const b = Math.max(before.lastIndexOf('. '), before.lastIndexOf('? '), before.lastIndexOf('! '));
+  const a = after.slice(t.length).search(/[.?!](\s|$)/);
+  return ((b >= 0 ? before.slice(b + 2) : before) + (a >= 0 ? after.slice(0, t.length + a + 1) : after)).trim();
+}
+function selectionInfo(){
+  const sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) return null;
+  const an = sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
+  if (!an || !an.closest('.textLayer')) return null;
+  const term = cleanTerm(sel.toString());
+  if (!term || term.length > 2500) return null;
+  const rect = sel.getRangeAt(0).getBoundingClientRect();
+  return { term, rect, context: isPassage(term) ? '' : contextFor(sel, term) };
+}
+$('viewer').addEventListener('dblclick', () => setTimeout(() => { const i = selectionInfo(); if (i) { hideChip(); lookup(i.term, i.context, i.rect); } }, 10));
+function maybeChip(){
+  setTimeout(() => {
+    const i = selectionInfo();
+    if (!i) { hideChip(); return; }
+    if (card.style.display === 'block') return;
+    chip._i = i;
+    chip.textContent = isPassage(i.term) ? '🌐 Translate to Arabic · ترجم' : '🔍 Translate · ترجم';
+    chip.style.display = 'block';
+    const x = i.rect.left + scrollX + i.rect.width / 2 - chip.offsetWidth / 2;
+    const y = i.rect.top + scrollY - chip.offsetHeight - 8;
+    chip.style.left = Math.max(8, Math.min(x, innerWidth - chip.offsetWidth - 8)) + 'px';
+    chip.style.top = (y < scrollY + 70 ? i.rect.bottom + scrollY + 8 : y) + 'px';
+  }, 30);
+}
+$('viewer').addEventListener('mouseup', e => { if (e.detail < 2) maybeChip(); });
+$('viewer').addEventListener('touchend', maybeChip);
+document.addEventListener('selectionchange', () => { const s = getSelection(); if (!s || s.isCollapsed) hideChip(); });
+chip.addEventListener('mousedown', e => e.preventDefault());
+chip.onclick = () => { const i = chip._i; hideChip(); if (i) lookup(i.term, i.context, i.rect); };
+function hideChip(){ chip.style.display = 'none'; }
+$('qlook').onsubmit = e => {
+  e.preventDefault();
+  const t = cleanTerm($('qInput').value); if (!t) return;
+  lookup(t, '', $('qInput').getBoundingClientRect(), true);
+};
+
+/* ================= the card ================= */
+let cur = null, reqId = 0;
+function placeCard(rect, below){
+  card.style.display = 'block';
+  const w = card.offsetWidth, h = card.offsetHeight;
+  let x = rect.left + scrollX + rect.width / 2 - w / 2;
+  x = Math.max(scrollX + 10, Math.min(x, scrollX + innerWidth - w - 10));
+  let y;
+  if (below) y = rect.bottom + scrollY + 10;
+  else y = (rect.bottom + 12 + h < innerHeight) ? rect.bottom + scrollY + 10 : Math.max(scrollY + 70, rect.top + scrollY - h - 10);
+  card.style.left = x + 'px'; card.style.top = y + 'px';
+}
+function hideCard(){ card.style.display = 'none'; cur = null; }
+document.addEventListener('mousedown', e => {
+  if (card.style.display === 'block' && !card.contains(e.target) && e.target !== chip && !e.target.closest('.qlook')) hideCard();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { hideCard(); hideChip(); } });
+const isSaved = w => words.some(x => x.w.toLowerCase() === String(w).toLowerCase());
+
+function lookup(term, context, rect, below){
+  if (isPassage(term)) return translatePassage(term, rect, below);
+  return lookupWord(term, context, rect, below);
+}
+
+async function lookupWord(term, context, rect, below){
+  const my = ++reqId;
+  card.classList.remove('wide');
+  cur = { kind:'word', term, context, rect, below };
+  card.innerHTML = head(esc(term), '', false) + '<div class="cb"><div class="loading"><div class="spin"></div>Translating…</div></div>';
+  placeCard(rect, below);
+  bump('lookups');
+  const [tr, dict] = await Promise.allSettled([translate(term), dictionary(term)]);
+  if (my !== reqId) return;
+  cur.tr = tr.status === 'fulfilled' ? tr.value : null;
+  cur.trErr = tr.status === 'rejected' ? (tr.reason && tr.reason.message) : '';
+  cur.dict = dict.status === 'fulfilled' ? dict.value : null;
+  cur.hw = (cur.dict && cur.dict.headword) || term;
+  recent = [{ w:cur.hw, ar: cur.tr ? cur.tr.main : '' }, ...recent.filter(r => r.w.toLowerCase() !== cur.hw.toLowerCase())].slice(0, 24);
+  LS.set(uk('recent'), recent);
+  renderWord();
+  if (settings.autoSentence && context) translateSentence();
+}
+function head(title, sub, withTools, kind){
+  return '<div class="ch"><div style="flex:1;min-width:0"><div class="hw">' + title + '</div>' + (sub ? '<div class="ph2">' + sub + '</div>' : '') + '</div>' +
+    (withTools ? '<button class="ib" data-act="speak" title="Pronounce">🔊</button>' : '') +
+    (withTools && kind !== 'passage' ? '<button class="ib ' + (isSaved(cur.hw) ? 'saved' : '') + '" data-act="save" title="Save to My Words">' + (isSaved(cur.hw) ? '★' : '☆') + '</button>' : '') +
+    (kind === 'passage' ? '<button class="ib" data-act="copy" title="Copy Arabic">⧉</button>' : '') +
+    '<button class="ib" data-act="close" title="Close">✕</button></div>';
+}
+function renderWord(){
+  const c = cur, d = c.dict, tr = c.tr;
+  let html = head(esc(c.hw), d && d.phon ? esc(d.phon) : '', true, 'word') + '<div class="cb">';
+  html += '<div class="sec"><div class="lbl">Arabic <span class="ar-ui">العربية</span></div>';
+  if (tr) {
+    html += '<div class="arbig">' + esc(tr.main) + '</div>';
+    if (tr.alts && tr.alts.length) html += '<div class="alts">' + tr.alts.map(a => '<span>' + esc(a) + '</span>').join('') + '</div>';
+  } else html += '<div class="err">' + esc(c.trErr || 'Translation is not available right now.') + '</div>';
+  html += '</div>';
+  if (d && d.meanings.length) {
+    html += '<div class="sec"><div class="lbl">English meaning <span class="ar-ui">المعنى بالإنجليزية</span></div>';
+    d.meanings.forEach(m => {
+      html += (m.pos ? '<span class="pos">' + esc(m.pos) + '</span>' : '') + '<ol class="defs">' +
+        m.defs.map(x => '<li>' + esc(x.d) + (x.ex ? '<span class="eg">“' + esc(x.ex) + '”</span>' : '') + '</li>').join('') + '</ol>';
+    });
+    html += '</div>';
+  } else if (!/\s/.test(c.term)) {
+    html += '<div class="sec"><div class="lbl">English meaning</div><div style="color:var(--muted);font-size:14px">No dictionary entry found for this word (it may be a name or a very technical term).</div></div>';
+  }
+  if (c.context) {
+    const re = new RegExp('(' + c.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i');
+    html += '<div class="sec"><div class="lbl">In your PDF <span class="ar-ui">في الملف</span></div><div class="ctxbox">' + esc(c.context).replace(re, '<mark>$1</mark>') + '</div>' +
+      '<div id="sentAr" style="margin-top:8px">' + (c.sentAr ? '<div class="arpara">' + esc(c.sentAr) + '</div>' : '<button class="linkbtn" data-act="sentence">🌐 Translate this sentence into Arabic</button>') + '</div></div>';
+  }
+  if (d && d.syn.length) html += '<div class="sec"><div class="lbl">Similar words</div><div class="chips">' + d.syn.map(s => '<button class="chip" data-syn="' + esc(s) + '">' + esc(s) + '</button>').join('') + '</div></div>';
+  html += '<div class="src">Translation: ' + (settings.engine === 'google' ? 'Google' : 'MyMemory') + ' · Definitions: Free Dictionary</div></div>';
+  card.innerHTML = html;
+  placeCard(c.rect, c.below);
+}
+async function translateSentence(){
+  const c = cur; if (!c || !c.context) return;
+  const box = card.querySelector('#sentAr'); if (box) box.innerHTML = '<div class="loading"><div class="spin"></div>Translating the sentence…</div>';
+  try { const r = await translate(c.context); if (cur !== c) return; c.sentAr = r.main; bump('passages'); }
+  catch(e){ if (cur !== c) return; if (box) box.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; return; }
+  const b2 = card.querySelector('#sentAr'); if (b2) b2.innerHTML = '<div class="arpara">' + esc(c.sentAr) + '</div>';
+}
+async function translatePassage(text, rect, below){
+  const my = ++reqId;
+  card.classList.add('wide');
+  cur = { kind:'passage', term:text, rect, below, hw:text };
+  card.innerHTML = head('Arabic translation <span class="ar-ui" style="font-size:18px">· الترجمة</span>', '', false) + '<div class="cb"><div class="loading"><div class="spin"></div>Translating…</div></div>';
+  placeCard(rect, below);
+  try {
+    const r = await translate(text);
+    if (my !== reqId) return;
+    cur.ar = r.main; bump('passages');
+    card.innerHTML = head('Arabic translation <span class="ar-ui" style="font-size:18px">· الترجمة</span>', '', true, 'passage') +
+      '<div class="cb"><div class="arpara">' + esc(r.main) + '</div>' +
+      '<div class="sec"><div class="lbl">English</div><div class="ctxbox" style="max-height:8em;overflow:auto">' + esc(text) + '</div></div>' +
+      '<div class="src">Translation: ' + (settings.engine === 'google' ? 'Google' : 'MyMemory') + '</div></div>';
+    placeCard(rect, below);
+  } catch (e) {
+    if (my !== reqId) return;
+    card.querySelector('.cb').innerHTML = '<div class="err">' + esc(e.message || 'Translation failed. Check your internet connection.') + '</div>';
+  }
+}
+card.addEventListener('click', async e => {
+  const b = e.target.closest('button'); if (!b || !cur) return;
+  const act = b.dataset.act;
+  if (act === 'close') hideCard();
+  else if (act === 'speak') speak(cur.kind === 'passage' ? cur.term : cur.hw, cur.dict && cur.dict.audio);
+  else if (act === 'sentence') translateSentence();
+  else if (act === 'copy') { try { await navigator.clipboard.writeText(cur.ar || ''); toast('Arabic copied'); } catch(err){ toast('Copy was blocked by the browser'); } }
+  else if (act === 'save') {
+    if (isSaved(cur.hw)) { words = words.filter(w => w.w.toLowerCase() !== cur.hw.toLowerCase()); b.textContent = '☆'; b.classList.remove('saved'); toast('Removed from My Words'); sync('lex_delete_word', { p_sid:session.id, p_word:cur.hw }).catch(() => {}); }
+    else {
+      const m = cur.dict && cur.dict.meanings[0];
+      words.unshift({ w:cur.hw, ar: cur.tr ? cur.tr.main : '', pos: m ? m.pos : '', def: m && m.defs[0] ? m.defs[0].d : '', phon: cur.dict ? cur.dict.phon : '', audio: cur.dict ? cur.dict.audio : '', ctx: cur.context || '', added: Date.now(), known:0 });
+      b.textContent = '★'; b.classList.add('saved'); toast('Saved to My Words ★');
+      sync('lex_save_word', { p_sid:session.id, p:words[0] }).catch(() => {});
+    }
+    saveWords();
+  }
+  else if (b.dataset.syn) lookupWord(b.dataset.syn, '', cur.rect, cur.below);
+});
+
+/* ================= dashboard ================= */
+const PALETTE = ['#4f46e5','#0e9384','#e8930c','#e5484d','#7c3aed','#0284c7'];
+const SCIENCE = [
+  ['hypothesis','فَرَضِيَّة','noun','A possible explanation that can be tested by an experiment.'],
+  ['photosynthesis','البناء الضوئي','noun','The process plants use to make food from light, water and carbon dioxide.'],
+  ['velocity','السرعة المتجهة','noun','The speed of something in a given direction.'],
+  ['molecule','جُزَيء','noun','The smallest unit of a substance, made of atoms joined together.'],
+  ['ecosystem','نظام بيئي','noun','All the living things in an area and how they interact with their environment.'],
+  ['friction','الاحتكاك','noun','A force that slows down objects sliding against each other.'],
+  ['evaporation','التبخُّر','noun','When a liquid changes into a gas.'],
+  ['density','الكثافة','noun','How much mass is packed into a given volume.'],
+  ['circuit','دائرة كهربائية','noun','A closed path that electric current flows around.'],
+  ['organism','كائن حي','noun','Any living thing, such as a plant, animal or bacterium.'],
+  ['variable','مُتغيِّر','noun','A factor that can change in an experiment.'],
+  ['gravity','الجاذبية','noun','The force that pulls objects towards each other, such as towards Earth.'],
+  ['conductor','موصِل','noun','A material that lets heat or electricity pass through easily.'],
+  ['habitat','موطن','noun','The natural home of a plant or animal.']
+];
+async function renderDashboard(){
+  $('heroHello').textContent = session ? 'Welcome, ' + session.name.split(' ')[0] + ' 👋' : 'Read · Understand · Learn';
+  $('sLook').textContent = stats.lookups || 0;
+  $('sPass').textContent = stats.passages || 0;
+  $('sSaved').textContent = words.length;
+  $('sDocs').textContent = stats.docs || 0;
+  // docs
+  const docs = await IDB.all();
+  const L = $('docList');
+  if (!docs.length) L.innerHTML = '<div class="emptyline">No PDFs yet. Open one to start reading — it will appear here so you can continue later.</div>';
+  else L.innerHTML = docs.slice(0,5).map((d,i) => {
+    const pct = d.pages ? Math.round((d.lastPage || 1) / d.pages * 100) : 0, col = PALETTE[i % PALETTE.length];
+    return '<div class="doc" role="button" tabindex="0" data-doc="' + esc(d.id) + '"><div class="thumb" style="background:' + col + '">PDF</div><div class="meta"><div class="nm">' + esc(d.name.replace(/\.pdf$/i,'')) + '</div>' +
+      '<div class="sm">Page ' + (d.lastPage || 1) + ' of ' + (d.pages || '?') + ' · ' + timeAgo(d.openedAt) + '</div><div class="bar"><i style="width:' + pct + '%;background:' + col + '"></i></div></div>' +
+      '<button class="x" data-deldoc="' + esc(d.id) + '" title="Remove from list">✕</button></div>';
+  }).join('');
+  // chart
+  const days = []; for (let i = 6; i >= 0; i--) { const dt = new Date(); dt.setDate(dt.getDate() - i); days.push(dt); }
+  const vals = days.map(d => stats.daily[d.toISOString().slice(0,10)] || 0), max = Math.max(4, ...vals);
+  const W = 460, H = 220, bw = 40, gap = (W - 40 - bw * 7) / 6;
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Look-ups in the last 7 days"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#0e9384"/></linearGradient></defs>';
+  [0,.5,1].forEach(f => { const y = 20 + (1 - f) * 150; svg += '<line x1="20" x2="' + (W-20) + '" y1="' + y + '" y2="' + y + '" stroke="#ece7da" stroke-dasharray="3 4"/>'; });
+  vals.forEach((v,i) => {
+    const h = Math.max(v ? 6 : 2, v / max * 150), x = 20 + i * (bw + gap), y = 170 - h, isT = i === 6;
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="' + h + '" rx="7" fill="' + (isT ? 'url(#g1)' : (v ? '#c7c9f7' : '#ece7da')) + '"/>';
+    if (v) svg += '<text x="' + (x + bw/2) + '" y="' + (y - 6) + '" text-anchor="middle" font-size="12" font-weight="600" fill="#1c2434" font-family="Inter">' + v + '</text>';
+    svg += '<text x="' + (x + bw/2) + '" y="192" text-anchor="middle" font-size="12" fill="' + (isT ? '#4f46e5' : '#6b7385') + '" font-weight="' + (isT ? 700 : 500) + '" font-family="Inter">' + days[i].toLocaleDateString('en', { weekday:'short' }) + '</text>';
+  });
+  const total = vals.reduce((a,b) => a + b, 0);
+  svg += '<text x="20" y="214" font-size="12" fill="#6b7385" font-family="Inter">' + total + ' look‑ups and translations in the last 7 days</text></svg>';
+  $('chart').innerHTML = svg;
+  // recent
+  $('recentChips').innerHTML = recent.length ? recent.slice(0,14).map(r => '<button class="chip" data-recent="' + esc(r.w) + '">' + esc(r.w) + (r.ar ? '<span class="ar">' + esc(r.ar) + '</span>' : '') + '</button>').join('')
+    : '<div class="emptyline" style="width:100%">Words you look up will appear here.</div>';
+  // word of the day
+  const pool = words.length >= 5 ? words.map(w => [w.w, w.ar, w.pos, w.def]) : SCIENCE;
+  const dayN = Math.floor(Date.now() / 864e5), wd = pool[dayN % pool.length];
+  $('wotd').innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div class="w" style="flex:1">' + esc(wd[0]) + '</div><button class="ib" id="wotdSpeak" title="Pronounce">🔊</button></div>' +
+    '<div class="a">' + esc(wd[1]) + '</div>' + (wd[2] ? '<span class="pos">' + esc(wd[2]) + '</span>' : '') +
+    '<div style="color:#4a5266;line-height:1.5;margin-top:4px">' + esc(wd[3] || '') + '</div>' +
+    '<div style="margin-top:12px;font-size:12.5px;color:#9a7a3a">' + (words.length >= 5 ? 'From your saved words' : 'Science word of the day') + '</div>';
+  $('wotdSpeak').onclick = () => tts(wd[0]);
+}
+function timeAgo(t){
+  const s = (Date.now() - t) / 1000;
+  if (s < 90) return 'just now'; if (s < 3600) return Math.round(s/60) + ' min ago';
+  if (s < 86400) return Math.round(s/3600) + ' h ago'; const d = Math.round(s/86400); return d === 1 ? 'yesterday' : d + ' days ago';
+}
+$('docList').addEventListener('click', async e => {
+  const del = e.target.closest('[data-deldoc]');
+  if (del) { e.stopPropagation(); await IDB.del(del.dataset.deldoc); renderDashboard(); return; }
+  const d = e.target.closest('[data-doc]'); if (d) openSaved(d.dataset.doc);
+});
+$('docList').addEventListener('keydown', e => { const d = e.target.closest('[data-doc]'); if (d && e.key === 'Enter') openSaved(d.dataset.doc); });
+$('recentChips').addEventListener('click', e => {
+  const c = e.target.closest('[data-recent]'); if (!c) return;
+  lookupWord(c.dataset.recent, '', c.getBoundingClientRect(), true);
+});
+
+/* ================= vocabulary ================= */
+function renderVocab(){
+  const q = $('vSearch').value.trim().toLowerCase();
+  const list = words.filter(w => !q || w.w.toLowerCase().includes(q) || (w.ar || '').includes(q) || (w.def || '').toLowerCase().includes(q));
+  $('vCount').textContent = words.length ? (list.length + ' of ' + words.length + ' words') : '';
+  const T = $('vTable');
+  if (!words.length) { T.innerHTML = '<tr><td><div class="emptyline" style="padding:40px">No saved words yet.<br>In the Reader, double‑click a word and press ☆ to save it here.</div></td></tr>'; return; }
+  T.innerHTML = '<thead><tr><th>Word</th><th style="text-align:right">Arabic</th><th>Meaning</th><th>Level</th><th></th></tr></thead><tbody>' +
+    list.map(w => {
+      const k = w.known || 0, lv = k >= 3 ? ['Mastered','var(--teal-s)','var(--teal)'] : k >= 1 ? ['Learning','var(--amber-s)','#a15c00'] : ['New','var(--indigo-s)','var(--indigo)'];
+      return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + (w.phon ? ' · ' + esc(w.phon) : '') + '</div></td>' +
+        '<td class="a">' + esc(w.ar) + '</td><td class="d">' + esc(w.def || '') + '</td>' +
+        '<td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td>' +
+        '<td style="white-space:nowrap"><button class="ib" data-vspeak="' + esc(w.w) + '" title="Pronounce">🔊</button><button class="ib" data-vdel="' + esc(w.w) + '" title="Delete">🗑</button></td></tr>';
+    }).join('') + '</tbody>';
+}
+$('vSearch').oninput = renderVocab;
+$('vTable').addEventListener('click', e => {
+  const s = e.target.closest('[data-vspeak]'); if (s) { const w = words.find(x => x.w === s.dataset.vspeak); speak(s.dataset.vspeak, w && w.audio); }
+  const d = e.target.closest('[data-vdel]'); if (d) { words = words.filter(x => x.w !== d.dataset.vdel); saveWords(); renderVocab(); sync('lex_delete_word', { p_sid:session.id, p_word:d.dataset.vdel }).catch(() => {}); }
+});
+$('vCopy').onclick = async () => {
+  const txt = words.map(w => w.w + ' — ' + (w.ar || '') + (w.def ? ' — ' + w.def : '')).join('\n');
+  try { await navigator.clipboard.writeText(txt); toast('Copied ' + words.length + ' words'); } catch(e){ toast('Copy was blocked by the browser'); }
+};
+$('vCsv').onclick = () => {
+  if (!words.length) { toast('No words to export yet'); return; }
+  const q = s => '"' + String(s || '').replace(/"/g,'""') + '"';
+  const rows = [['Word','Arabic','Part of speech','Meaning','Sentence from PDF']].concat(words.map(w => [w.w, w.ar, w.pos, w.def, w.ctx]));
+  const blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-words.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+twoTap($('vClear'), 'Tap again to clear all', () => { words = []; saveWords(); renderVocab(); toast('Word list cleared'); sync('lex_clear_words', { p_sid:session.id }).catch(() => {}); });
+
+/* ================= flashcards ================= */
+let deck = [], di = 0;
+function startDeck(shuffle){
+  deck = words.slice().sort((a,b) => (a.known || 0) - (b.known || 0));
+  if (shuffle) deck.sort(() => Math.random() - .5);
+  di = 0; renderCard();
+}
+function renderCard(){
+  const W = $('fcWrap');
+  if (!words.length) { W.innerHTML = '<div class="panel"><div class="emptyline" style="padding:46px">No words to practise yet.<br>Save words from the Reader with ☆ and they will appear here as flashcards.<br><br><button class="btn pri" data-go="reader">Go to the Reader</button></div></div>'; return; }
+  if (di >= deck.length) {
+    const m = words.filter(w => (w.known || 0) >= 3).length;
+    W.innerHTML = '<div class="panel"><div class="emptyline" style="padding:46px"><div style="font-size:42px">🎉</div><h2 style="color:var(--ink)">Round complete!</h2><p>You have mastered <b>' + m + '</b> of ' + words.length + ' words.</p><button class="btn pri" id="fcAgain">Practise again</button></div></div>';
+    $('fcAgain').onclick = () => startDeck(true); return;
+  }
+  const w = deck[di];
+  W.innerHTML = '<div class="fc" id="fc"><div class="fc-in"><div class="fc-f"><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.phon || w.pos || '') + '</div><div class="tap">Tap to flip · اضغط للقلب</div></div>' +
+    '<div class="fc-b"><div class="a">' + esc(w.ar || '—') + '</div><div class="d">' + esc(w.def || '') + '</div></div></div></div>' +
+    '<div class="fc-acts"><button class="btn" id="fcSpeak">🔊 Listen</button><button class="btn again" id="fcNo">↺ Still learning</button><button class="btn good" id="fcYes">✓ I knew it</button></div>' +
+    '<div class="fc-prog">Card ' + (di + 1) + ' of ' + deck.length + '</div>';
+  $('fc').onclick = () => $('fc').classList.toggle('flip');
+  $('fcSpeak').onclick = () => speak(w.w, w.audio);
+  const mark = d => { const ww = words.find(x => x.w === w.w); if (ww) { ww.known = Math.max(0, (ww.known || 0) + d); saveWords(); sync('lex_set_known', { p_sid:session.id, p_word:ww.w, p_known:ww.known }).catch(() => {}); } di++; renderCard(); };
+  $('fcYes').onclick = () => mark(1); $('fcNo').onclick = () => mark(-1);
+}
+$('fcShuffle').onclick = () => startDeck(true);
+
+/* ================= settings ================= */
+function renderSettings(){
+  document.querySelectorAll('input[name=engine]').forEach(r => r.checked = r.value === settings.engine);
+  $('sEmail').value = settings.email; $('sKey').value = settings.key;
+  $('sRate').value = settings.rate; $('sRateV').textContent = (+settings.rate).toFixed(1);
+  $('sAuto').checked = !!settings.autoSentence;
+  $('sWho').textContent = session ? session.name : '';
+  $('fEmail').classList.toggle('hidden', settings.engine !== 'mymemory');
+  $('fKey').classList.toggle('hidden', settings.engine !== 'google');
+}
+document.querySelectorAll('input[name=engine]').forEach(r => r.onchange = () => { settings.engine = r.value; saveSettings(); renderSettings(); });
+$('sEmail').onchange = () => { settings.email = $('sEmail').value.trim(); saveSettings(); toast('Saved'); };
+$('sKey').onchange = () => { settings.key = $('sKey').value.trim(); saveSettings(); toast('Saved'); };
+$('sRate').oninput = () => { settings.rate = +$('sRate').value; $('sRateV').textContent = settings.rate.toFixed(1); saveSettings(); };
+$('sAuto').onchange = () => { settings.autoSentence = $('sAuto').checked; saveSettings(); };
+$('sTest').onclick = async () => {
+  const o = $('sTestOut'); o.innerHTML = '<div class="loading"><div class="spin"></div>Testing…</div>';
+  try { tCache.clear(); const r = await translate('Plants need sunlight to grow.'); o.innerHTML = '✅ Working: <span class="ar" style="font-size:19px">' + esc(r.main) + '</span>'; }
+  catch(e){ o.innerHTML = '<span class="err">❌ ' + esc(e.message || 'Could not connect. Check your internet connection.') + '</span>'; }
+};
+twoTap($('sReset'), 'Tap again to delete your words', async () => {
+  words = []; recent = []; saveWords(); LS.set(uk('recent'), recent);
+  try { await sync('lex_clear_words', { p_sid:session.id }); toast('Your saved words were deleted'); } catch(e){}
+});
+$('sSignOut').onclick = signOut;
+
+/* ================= helpers ================= */
+function twoTap(btn, msg, fn){
+  const orig = btn.innerHTML;
+  btn.onclick = () => {
+    if (btn.dataset.arm) { delete btn.dataset.arm; btn.innerHTML = orig; fn(); return; }
+    btn.dataset.arm = '1'; btn.textContent = msg;
+    setTimeout(() => { if (btn.dataset.arm) { delete btn.dataset.arm; btn.innerHTML = orig; } }, 3500);
+  };
+}
+let tt; function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2400); }
+
+/* ================= login ================= */
+function applySession(){
+  $('meBox').classList.toggle('hidden', !session);
+  if (session) { $('meName').textContent = session.name; $('meAv').textContent = session.name.trim().charAt(0).toUpperCase(); }
+}
+async function refreshFromServer(){
+  if (!session) return;
+  try {
+    const d = await rpc('lex_get_data', { p_sid:session.id });
+    if (!d) { signOut(); return; }
+    words = d.words || [];
+    stats = Object.assign({ lookups:0, passages:0, docs:0, daily:{} }, d.stats || {});
+    saveWords(); LS.set(uk('stats'), stats); setSync();
+    const v = location.hash.slice(1) || 'dashboard';
+    if (v === 'dashboard') renderDashboard(); else if (v === 'vocabulary') renderVocab(); else if (v === 'flashcards') startDeck(false);
+  } catch(e){ setSync(true); }
+}
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const name = $('loginName').value.replace(/\s+/g,' ').trim();
+  $('loginErr').textContent = '';
+  if (name.length < 2) { $('loginErr').textContent = 'Please type your full name.'; return; }
+  $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
+  try {
+    const r = await rpc('lex_login', { p_name:name });
+    session = { id:r.id, name:r.name }; LS.set('session', session);
+    loadCache(); applySession();
+    $('login').classList.remove('show');
+    await refreshFromServer();
+    toast('Welcome, ' + session.name + '!');
+    show(location.hash.slice(1) || 'dashboard');
+  } catch(err){ $('loginErr').textContent = err.message; }
+  $('loginBtn').disabled = false; $('loginBtn').textContent = 'Start reading →';
+};
+function signOut(){
+  session = null; LS.set('session', null);
+  words = []; recent = []; stats = { lookups:0, passages:0, docs:0, daily:{} };
+  applySession(); $('loginName').value = '';
+  go('dashboard'); show('dashboard');
+}
+$('signOut').onclick = signOut;
+$('toTeacher').onclick = () => { $('login').classList.remove('show'); go('teacher'); };
+
+/* ================= teacher ================= */
+let tPin = sessionStorage.getItem ? (() => { try { return sessionStorage.getItem('lex_tpin'); } catch(e){ return null; } })() : null;
+let tData = [];
+function openTeacher(){
+  if (tPin) loadTeacher(); else { $('tLock').classList.remove('hidden'); $('tMain').classList.add('hidden'); setTimeout(() => $('tPin').focus(), 50); }
+}
+$('tForm').onsubmit = e => { e.preventDefault(); tPin = $('tPin').value.trim(); loadTeacher(true); };
+async function loadTeacher(fromForm){
+  $('tErr').textContent = fromForm ? 'Checking…' : '';
+  try {
+    tData = await rpc('lex_teacher_overview', { p_pin:tPin }) || [];
+    try { sessionStorage.setItem('lex_tpin', tPin); } catch(e){}
+    $('tLock').classList.add('hidden'); $('tMain').classList.remove('hidden'); $('tErr').textContent = ''; $('tPin').value = '';
+    renderTeacher();
+  } catch(err){
+    tPin = null; try { sessionStorage.removeItem('lex_tpin'); } catch(e){}
+    $('tLock').classList.remove('hidden'); $('tMain').classList.add('hidden');
+    $('tErr').textContent = err.message;
+  }
+}
+function renderTeacher(){
+  const q = $('tSearch').value.trim().toLowerCase();
+  $('tStu').textContent = tData.length;
+  $('tActive').textContent = tData.filter(s => s.week > 0).length;
+  $('tWords').textContent = tData.reduce((a,s) => a + (+s.words || 0), 0);
+  $('tLooks').textContent = tData.reduce((a,s) => a + (+s.lookups || 0) + (+s.passages || 0), 0);
+  const list = tData.filter(s => !q || s.name.toLowerCase().includes(q));
+  if (!tData.length) { $('tTable').innerHTML = '<tr><td><div class="emptyline" style="padding:40px">No students yet. When students sign in with their name, they will appear here.</div></td></tr>'; return; }
+  $('tTable').innerHTML = '<thead><tr><th>Student</th><th>Words saved</th><th>Mastered</th><th>Look‑ups</th><th>Translations</th><th>This week</th><th>Last active</th><th></th></tr></thead><tbody>' +
+    list.map(s => '<tr><td><div class="w">' + esc(s.name) + '</div><div class="p" style="color:var(--muted);font-style:normal">joined ' + new Date(s.created_at).toLocaleDateString() + '</div></td>' +
+      '<td><b>' + s.words + '</b></td><td>' + s.mastered + '</td><td>' + s.lookups + '</td><td>' + s.passages + '</td>' +
+      '<td><span class="lvl" style="background:' + (s.week ? 'var(--teal-s);color:var(--teal)' : '#f2efe6;color:var(--muted)') + '">' + s.week + '</span></td>' +
+      '<td style="white-space:nowrap">' + timeAgo(new Date(s.last_seen).getTime()) + '</td>' +
+      '<td class="act"><button class="btn sm" data-tview="' + s.id + '">View words</button> <button class="ib" data-tdel="' + s.id + '" title="Delete student">🗑</button></td></tr>').join('') + '</tbody>';
+}
+$('tSearch').oninput = renderTeacher;
+$('tRefresh').onclick = () => loadTeacher();
+$('tLockBtn').onclick = () => { tPin = null; try { sessionStorage.removeItem('lex_tpin'); } catch(e){} $('tDetail').classList.add('hidden'); openTeacher(); };
+$('tTable').addEventListener('click', async e => {
+  const v = e.target.closest('[data-tview]');
+  if (v) {
+    const s = tData.find(x => x.id === v.dataset.tview), D = $('tDetail');
+    D.classList.remove('hidden'); D.innerHTML = '<div class="panel-b"><div class="loading"><div class="spin"></div>Loading…</div></div>';
+    D.scrollIntoView({ behavior:'smooth', block:'start' });
+    try {
+      const ws = await rpc('lex_teacher_words', { p_pin:tPin, p_sid:s.id }) || [];
+      D.innerHTML = '<div class="panel-h"><h3>' + esc(s.name) + ' — saved words (' + ws.length + ')</h3><button class="ib" id="tDetClose">✕</button></div><div class="panel-b" style="overflow:auto">' +
+        (ws.length ? '<table class="vt"><thead><tr><th>Word</th><th style="text-align:right">Arabic</th><th>Meaning</th><th>Level</th></tr></thead><tbody>' +
+          ws.map(w => { const k = w.known || 0, lv = k >= 3 ? ['Mastered','var(--teal-s)','var(--teal)'] : k >= 1 ? ['Learning','var(--amber-s)','#a15c00'] : ['New','var(--indigo-s)','var(--indigo)'];
+            return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + '</div></td><td class="a">' + esc(w.ar) + '</td><td class="d">' + esc(w.def || '') + '</td><td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td></tr>'; }).join('') +
+          '</tbody></table>' : '<div class="emptyline">This student has not saved any words yet.</div>') + '</div>';
+      $('tDetClose').onclick = () => D.classList.add('hidden');
+    } catch(err){ D.innerHTML = '<div class="panel-b err">' + esc(err.message) + '</div>'; }
+  }
+  const d = e.target.closest('[data-tdel]');
+  if (d) {
+    if (d.dataset.arm) {
+      try { await rpc('lex_teacher_delete_student', { p_pin:tPin, p_sid:d.dataset.tdel }); toast('Student deleted'); $('tDetail').classList.add('hidden'); loadTeacher(); }
+      catch(err){ toast(err.message); }
+    } else { d.dataset.arm = '1'; d.textContent = 'Delete?'; d.style.width = 'auto'; d.style.color = 'var(--coral)'; setTimeout(() => { if (d.isConnected) { delete d.dataset.arm; d.textContent = '🗑'; d.style.color = ''; } }, 3500); }
+  }
+});
+$('tCsv').onclick = () => {
+  const q = s => '"' + String(s == null ? '' : s).replace(/"/g,'""') + '"';
+  const rows = [['Student','Words saved','Mastered','Look-ups','Translations','This week','Last active']].concat(tData.map(s => [s.name, s.words, s.mastered, s.lookups, s.passages, s.week, new Date(s.last_seen).toLocaleString()]));
+  const blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'students-progress.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+};
+$('tPinForm').onsubmit = async e => {
+  e.preventDefault(); const m = $('tPinMsg'); m.textContent = 'Saving…';
+  try { await rpc('lex_teacher_set_pin', { p_old:$('tOld').value, p_new:$('tNew').value }); tPin = $('tNew').value; try { sessionStorage.setItem('lex_tpin', tPin); } catch(err){} m.innerHTML = '✅ PIN changed.'; $('tOld').value = $('tNew').value = ''; }
+  catch(err){ m.innerHTML = '<span class="err">' + esc(err.message) + '</span>'; }
+};
+
+/* ================= start ================= */
+if (session) { loadCache(); applySession(); refreshFromServer(); }
+show(location.hash.slice(1) || 'dashboard');
+if (!session && location.hash.slice(1) !== 'teacher') setTimeout(() => $('loginName').focus(), 100);
+})();
+</script>
+</body>
+</html>

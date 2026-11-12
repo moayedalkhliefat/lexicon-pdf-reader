@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lexicon · PDF Reader & Arabic Translator — by Mr. Moayed Alkhliefat</title>
-<meta name="description" content="Read any PDF and get instant English→Arabic translations and meanings. Designed by Mr. Moayed Alkhliefat.">
+<meta name="description" content="Read any PDF and get instant English→Arabic, English→Chinese and Chinese→English translations and meanings. Designed by Mr. Moayed Alkhliefat.">
 <meta name="author" content="Mr. Moayed Alkhliefat">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{
@@ -186,6 +186,33 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;letter-spacing:-.01em}
 .linkbtn{border:none;background:none;color:var(--indigo);font-weight:600;padding:0;font-size:13.5px}
 .linkbtn:hover{text-decoration:underline}
 
+.zh{font-family:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif}
+.py{color:var(--teal);font-size:14px;letter-spacing:.01em}
+.zhbig{display:flex;align-items:center;gap:10px;background:var(--indigo-s);border-radius:12px;padding:8px 10px 8px 14px}
+.zhbig .zh-ch{font-size:30px;font-weight:700;color:var(--indigo);line-height:1.3}
+.enbig{font-size:25px;font-weight:700;color:var(--indigo);background:var(--indigo-s);border-radius:12px;padding:8px 14px;line-height:1.3}
+.altsl{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.altsl>span{background:#f6f3ea;border-radius:99px;padding:2px 11px;font-size:14.5px}
+.zhpara,.enpara{border-radius:12px;padding:10px 14px;background:var(--teal-s);color:#0b3d38;line-height:1.75}
+.zhpara .zh{font-size:19px}.enpara{font-size:15.5px}
+.ctxbox.zh{font-size:16px}
+.langpick{display:flex;gap:8px;margin-top:12px}
+.langpick label{flex:1;border:2px solid var(--line);border-radius:12px;padding:9px 6px;cursor:pointer;font-weight:600;font-size:14.5px}
+.langpick label:has(input:checked){border-color:var(--indigo);background:var(--indigo-s);color:var(--indigo)}
+.langpick input{position:absolute;opacity:0;pointer-events:none}
+.vt .tcell .ar{font-family:Amiri,serif;font-size:20px;direction:rtl;text-align:right;color:var(--indigo);white-space:nowrap}
+.vt .tcell .zh{font-size:19px;color:var(--indigo);white-space:nowrap}
+.vt .tcell .en-t{color:var(--indigo);font-weight:600}
+.vt .tcell .py{font-size:12.5px}
+.fc-b .zh{font-size:40px;color:var(--teal);font-weight:700}
+.fc-b .ar{font-family:Amiri,serif;font-size:42px;color:var(--teal);font-weight:700}
+.fc-b .en-t{font-size:32px;color:var(--teal);font-weight:700}
+.fc-b .py{font-size:18px;margin-top:4px}
+.fc-f .zh{font-size:44px;font-weight:700}
+.wotd .zh{font-size:28px;color:var(--amber);font-weight:700}
+.wotd .ar{font-family:Amiri,serif;font-size:28px;color:var(--amber)}
+.wotd .en-t{font-size:22px;color:var(--amber);font-weight:700}
+.chip .zh,.chip .en-t{color:var(--muted)}
 /* ---------- Vocabulary ---------- */
 .toolrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
 .search{border:1px solid var(--line);border-radius:10px;padding:9px 12px;width:min(320px,100%);background:#fff}
@@ -328,7 +355,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
         <span class="tag" style="background:rgba(255,255,255,.18)" id="heroHello">Read · Understand · Learn</span>
         <h1 style="margin-top:12px">Read any PDF and understand every word</h1>
         <div class="arline">اقرأ أي ملف PDF وافهم كل كلمة بالعربية</div>
-        <p>Double‑click a word to see its Arabic translation and English meaning. Select a sentence to translate it into Arabic. Save new words and revise them with flashcards.</p>
+        <p>Double‑click a word to see its Arabic or Chinese translation and English meaning. Select a sentence to translate it. Reading a Chinese PDF? Chinese is translated into English. Save new words and revise them with flashcards.</p>
         <div class="acts">
           <button class="btn" data-open style="background:#fff;color:var(--indigo);border-color:#fff">📂 Open a PDF</button>
           <button class="btn ghost" data-go="flashcards">🃏 Review flashcards</button>
@@ -380,19 +407,19 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
       </div>
       <span class="pinfo" id="pInfo"></span>
       <form class="qlook" id="qlook">
-        <input id="qInput" placeholder="Type an English word or sentence…" autocomplete="off">
+        <input id="qInput" placeholder="Type English or Chinese text…" autocomplete="off">
         <button class="btn teal" type="submit">ترجم</button>
       </form>
     </div>
-    <div class="hint hidden" id="readHint"><span><b>Double‑click</b> a word → Arabic + meaning</span><span><b>Select</b> a sentence → translate</span><span><b>★</b> save words for flashcards</span></div>
+    <div class="hint hidden" id="readHint"><span><b>Double‑click</b> a word → translation + meaning</span><span><b>Select</b> a sentence → translate</span><span><b>★</b> save words for flashcards</span></div>
     <div class="bigdrop" id="bigDrop">
       <h2>Open a PDF to start reading</h2>
       <div class="ar">افتح ملف PDF لتبدأ القراءة</div>
       <p>Drag and drop a file here, or choose one from your device.</p>
       <button class="btn pri" data-open>Choose a PDF</button>
       <div class="howto">
-        <div style="background:var(--indigo-s)"><b>① Double‑click a word</b>See the Arabic translation, English definition and pronunciation.</div>
-        <div style="background:var(--teal-s)"><b>② Select a sentence</b>Press “Translate” to read the whole sentence or paragraph in Arabic.</div>
+        <div style="background:var(--indigo-s)"><b>① Double‑click a word</b>See the Arabic or Chinese translation (with pinyin), English definition and pronunciation.</div>
+        <div style="background:var(--teal-s)"><b>② Select a sentence</b>Press “Translate” to read the whole sentence or paragraph in Arabic or Chinese. Chinese text is translated into English.</div>
         <div style="background:var(--amber-s)"><b>③ Save & revise</b>Press ☆ to save a word, then practise it in Flashcards.</div>
       </div>
     </div>
@@ -410,7 +437,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
         <button class="btn" id="vClear">🗑 Clear</button>
       </div>
       <div class="toolrow">
-        <input class="search" id="vSearch" placeholder="Search English or Arabic…">
+        <input class="search" id="vSearch" placeholder="Search words…">
         <span class="pinfo" id="vCount"></span>
       </div>
       <div class="panel" style="overflow:auto"><table class="vt" id="vTable"></table></div>
@@ -421,7 +448,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
   <section class="view" id="v-flashcards">
     <div class="wrap">
       <div class="pagehead">
-        <div><h1>Flashcards</h1><div class="sub">Tap the card to see the Arabic · <span class="ar-ui">اضغط على البطاقة لترى الترجمة</span></div></div>
+        <div><h1>Flashcards</h1><div class="sub">Tap the card to see the translation · <span class="ar-ui">اضغط على البطاقة لترى الترجمة</span></div></div>
         <div class="spacer"></div>
         <button class="btn" id="fcShuffle">🔀 Shuffle</button>
       </div>
@@ -435,6 +462,12 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
       <div class="pagehead"><div><h1>Settings</h1><div class="sub">Translation service and preferences · <span class="ar-ui">خدمة الترجمة والتفضيلات</span></div></div></div>
       <div class="setgrid">
         <div class="panel">
+          <div class="panel-h"><h3>Translate English into</h3></div>
+          <div class="panel-b">
+            <label class="opt"><input type="radio" name="tlang" value="ar"><div><b>Arabic · العربية</b><span>English words and sentences are translated into Arabic.</span></div></label>
+            <label class="opt"><input type="radio" name="tlang" value="zh"><div><b>Chinese · 中文</b><span>Simplified Chinese with pinyin.</span></div></label>
+            <small style="display:block;color:var(--muted);margin:2px 2px 6px;line-height:1.45">Chinese text in a PDF is always translated into English.</small>
+          </div>
           <div class="panel-h"><h3>Translation service</h3></div>
           <div class="panel-b">
             <label class="opt"><input type="radio" name="engine" value="mymemory"><div><b>MyMemory (free)</b><span>No setup. About 5,000 characters a day per device — enough for hundreds of words. Add an email below for 50,000 a day.</span></div></label>
@@ -457,7 +490,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
           <div class="panel-b" style="line-height:1.6;color:#4a5266">
             <b style="font-family:Fraunces,serif;font-size:17px;color:var(--ink)">Lexicon — PDF Reader & Arabic Translator</b><br>
             Designed by <b>Mr. Moayed Alkhliefat</b>.<br>
-            Definitions: Free Dictionary API · Translation: MyMemory / Google · PDF rendering: PDF.js (Mozilla).
+            Definitions: Free Dictionary API · Translation: MyMemory / Google · Pinyin: pinyin-pro · PDF rendering: PDF.js (Mozilla).
           </div>
         </div>
       </div>
@@ -515,6 +548,11 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
     <div class="ar">أهلاً بك — اكتب اسمك للدخول</div>
     <form id="loginForm">
       <input id="loginName" placeholder="Your full name" autocomplete="name" maxlength="60">
+      <div class="note" style="margin-top:12px;margin-bottom:-4px">Translate English into:</div>
+      <div class="langpick">
+        <label><input type="radio" name="llang" value="ar"> العربية · Arabic</label>
+        <label><input type="radio" name="llang" value="zh"> 中文 · Chinese</label>
+      </div>
       <button class="btn pri" type="submit" id="loginBtn">Start reading →</button>
     </form>
     <div class="err" id="loginErr" style="margin-top:8px"></div>
@@ -559,7 +597,7 @@ const LS = {
   get(k, d){ try { const v = localStorage.getItem('lex_' + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
   set(k, v){ try { localStorage.setItem('lex_' + k, JSON.stringify(v)); } catch(e){} }
 };
-let settings = Object.assign({ engine:'mymemory', email:'', key:'', rate:1, autoSentence:false }, LS.get('settings', {}));
+let settings = Object.assign({ engine:'mymemory', email:'', key:'', rate:1, autoSentence:false, lang:'ar' }, LS.get('settings', {}));
 let session = LS.get('session', null);   // {id, name}
 const uk = k => k + '_' + (session ? session.id : 'x');
 let words = [], stats = { lookups:0, passages:0, docs:0, daily:{} }, recent = [];
@@ -639,7 +677,7 @@ document.addEventListener('click', e => {
 /* ================= translation & dictionary ================= */
 const tCache = new Map(), dCache = new Map();
 function chunkText(text, max){
-  const parts = text.match(/[^.!?;]+[.!?;]*\s*/g) || [text];
+  const parts = text.match(/[^.!?;。！？；]+[.!?;。！？；]*\s*/g) || [text];
   const out = []; let cur = '';
   for (let p of parts) {
     while (p.length > max) { const cut = p.lastIndexOf(' ', max) > 50 ? p.lastIndexOf(' ', max) : max; if (cur) { out.push(cur); cur=''; } out.push(p.slice(0,cut)); p = p.slice(cut); }
@@ -648,24 +686,49 @@ function chunkText(text, max){
   if (cur.trim()) out.push(cur);
   return out.map(s => s.trim()).filter(Boolean);
 }
-async function translate(text){
-  text = text.trim();
-  const key = settings.engine + '|' + text;
+const HAS_ZH = /[㐀-鿿豈-﫿]/;
+const LANGS = { ar:{ name:'Arabic', code:'ar' }, zh:{ name:'Chinese', code:'zh-CN' }, en:{ name:'English', code:'en' } };
+const dirFor = t => HAS_ZH.test(t) ? { from:'zh', to:'en' } : { from:'en', to: settings.lang === 'zh' ? 'zh' : 'ar' };
+const tcls = l => l === 'zh' ? 'zh' : l === 'en' ? 'en-t' : 'ar';
+let pinyinP = null;
+function loadPinyin(){
+  if (window.pinyinPro) return Promise.resolve(window.pinyinPro);
+  if (!pinyinP) pinyinP = new Promise(res => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/pinyin-pro@3.29.5/dist/index.js';
+    s.onload = () => res(window.pinyinPro || null); s.onerror = () => { pinyinP = null; res(null); };
+    document.head.appendChild(s);
+  });
+  return pinyinP;
+}
+async function toPinyin(t){
+  if (!t || !HAS_ZH.test(t)) return '';
+  const lib = await loadPinyin(); if (!lib) return '';
+  try { return lib.pinyin(t, { nonZh:'consecutive' }); } catch(e){ return ''; }
+}
+function scriptOk(t, lang){
+  if (lang === 'ar') return /[؀-ۿ]/.test(t) && !/[A-Za-z]{3,}/.test(t);
+  if (lang === 'zh') return HAS_ZH.test(t) && !/[A-Za-z]{3,}/.test(t);
+  return /[A-Za-z]/.test(t) && !HAS_ZH.test(t);
+}
+async function translate(text, from, to){
+  text = text.trim(); from = from || 'en'; to = to || 'ar';
+  const key = settings.engine + '|' + from + '|' + to + '|' + text;
   if (tCache.has(key)) return tCache.get(key);
   let result;
   if (settings.engine === 'google') {
     if (!settings.key) throw new Error('Add your Google API key in Settings, or switch to MyMemory.');
     const r = await fetch('https://translation.googleapis.com/language/translate/v2?key=' + encodeURIComponent(settings.key), {
       method:'POST', headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ q:[text], source:'en', target:'ar', format:'text' })
+      body: JSON.stringify({ q:[text], source:LANGS[from].code, target:LANGS[to].code, format:'text' })
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error((j.error && j.error.message) || 'Google translation failed (' + r.status + ').');
     result = { main: j.data.translations[0].translatedText, alts: [] };
   } else {
-    const chunks = chunkText(text, 480), outs = []; let alts = [];
+    const chunks = chunkText(text, from === 'zh' ? 150 : 480), outs = []; let alts = [];
     for (const c of chunks) {
-      const url = 'https://api.mymemory.translated.net/get?langpair=en%7Car&q=' + encodeURIComponent(c) + (settings.email ? '&de=' + encodeURIComponent(settings.email) : '');
+      const url = 'https://api.mymemory.translated.net/get?langpair=' + LANGS[from].code + '%7C' + LANGS[to].code + '&q=' + encodeURIComponent(c) + (settings.email ? '&de=' + encodeURIComponent(settings.email) : '');
       const r = await fetch(url);
       const j = await r.json().catch(() => null);
       const status = j && +j.responseStatus;
@@ -674,16 +737,16 @@ async function translate(text){
       if (status && status !== 200) throw new Error(j.responseDetails || 'Translation failed.');
       outs.push(t);
       if (chunks.length === 1 && Array.isArray(j.matches)) {
-        const seen = new Set([t.trim()]);
+        const seen = new Set([t.trim().toLowerCase()]);
         j.matches.forEach(m => {
           const tr = String(m.translation || '').trim();
-          if (tr && !seen.has(tr) && /[؀-ۿ]/.test(tr) && !/[A-Za-z]{3,}/.test(tr) && tr.length < 60 && (m.segment || '').trim().toLowerCase() === c.toLowerCase()) { seen.add(tr); alts.push(tr); }
+          if (tr && !seen.has(tr.toLowerCase()) && scriptOk(tr, to) && tr.length < 60 && (m.segment || '').trim().toLowerCase() === c.toLowerCase()) { seen.add(tr.toLowerCase()); alts.push(tr); }
         });
       }
     }
-    result = { main: outs.join(' '), alts: alts.slice(0,4) };
+    result = { main: outs.join(to === 'zh' ? '' : ' '), alts: alts.slice(0,4) };
   }
-  if (!/[؀-ۿ]/.test(result.main) && result.alts.length) result.main = result.alts.shift();
+  if (!scriptOk(result.main, to) && result.alts.length) result.main = result.alts.shift();
   tCache.set(key, result);
   return result;
 }
@@ -731,11 +794,11 @@ function speak(text, audioUrl){
   } catch(e){}
   tts(text);
 }
-function tts(text){
+function tts(text, lang){
   try {
     if (!('speechSynthesis' in window)) { toast('Speech is not supported in this browser'); return; }
     speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = settings.rate;
+    const u = new SpeechSynthesisUtterance(text); u.lang = lang || 'en-US'; u.rate = settings.rate;
     speechSynthesis.speak(u);
   } catch(e){}
 }
@@ -778,7 +841,7 @@ async function loadPdf(buf, name, id, startPage){
   hideCard(); hideChip();
   try {
     if (pdf) { try { pdf.destroy(); } catch(e){} }
-    pdf = await pdfjsLib.getDocument({ data:new Uint8Array(buf), isEvalSupported:false }).promise;
+    pdf = await pdfjsLib.getDocument({ data:new Uint8Array(buf), isEvalSupported:false, cMapUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/', cMapPacked:true, standardFontDataUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/' }).promise;
   } catch (err) {
     toast(err && err.name === 'PasswordException' ? 'This PDF is password‑protected.' : 'Could not open this PDF.');
     return false;
@@ -829,7 +892,7 @@ async function renderPage(n){
   rec.div.appendChild(tl);
   try {
     const tc = await rec.page.getTextContent();
-    rec.text = tc.items.map(i => i.str + (i.hasEOL ? ' ' : '')).join(' ').replace(/-\s+(?=[a-z])/g, '').replace(/\s+/g,' ');
+    rec.text = tc.items.map(i => i.str + (i.hasEOL ? ' ' : '')).join(' ').replace(/-\s+(?=[a-z])/g, '').replace(/\s+/g,' ').replace(/([\u3000-\u303f\u3400-\u9fff\uff00-\uffef])\s+(?=[\u3000-\u303f\u3400-\u9fff\uff00-\uffef])/g, '$1');
     await pdfjsLib.renderTextLayer({ textContentSource:tc, container:tl, viewport:vp, textDivs:[] }).promise;
     const end = document.createElement('div'); end.className = 'endOfContent'; tl.appendChild(end);
     tl.addEventListener('mousedown', () => tl.classList.add('selecting'));
@@ -865,24 +928,25 @@ $('zIn').onclick = () => rezoom(1.15); $('zOut').onclick = () => rezoom(1/1.15);
 
 /* ================= selection ================= */
 const chip = $('tchip'), card = $('card');
-const cleanTerm = s => s.replace(/­/g,'').replace(/-\s+(?=[a-z])/g,'').replace(/\s+/g,' ').trim().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'');
-const isPassage = t => t.split(' ').length > 4 || t.length > 45;
+const cleanTerm = s => s.replace(/­/g,'').replace(/-\s+(?=[a-z])/g,'').replace(/([㐀-鿿])\s+(?=[㐀-鿿])/g,'$1').replace(/\s+/g,' ').trim().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu,'');
+const isPassage = t => HAS_ZH.test(t) ? t.replace(/\s/g,'').length > 8 : (t.split(' ').length > 4 || t.length > 45);
+function lastStop(s){ let i = -1, m; const re = /[.?!]\s|[。！？]/g; while ((m = re.exec(s))) i = m.index + m[0].length; return i; }
 function contextFor(sel, term){
   const node = sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement);
   const pageDiv = node && node.closest('.page');
   const text = pageDiv && pages[+pageDiv.dataset.n] ? (pages[+pageDiv.dataset.n].text || '') : '';
   if (!text) return '';
   const span = node.closest('span');
-  const anchorText = span ? span.textContent.trim().slice(0, 30) : '';
+  const anchorText = span ? cleanTerm(span.textContent).slice(0, 30) : '';
   const lower = text.toLowerCase(), t = term.toLowerCase();
   let from = anchorText ? Math.max(0, lower.indexOf(anchorText.toLowerCase())) : 0;
   let hit = lower.indexOf(t, from); if (hit < 0) hit = lower.indexOf(t);
   if (hit < 0) return '';
   const start = Math.max(0, hit - 240), endI = Math.min(text.length, hit + t.length + 240);
   const before = text.slice(start, hit), after = text.slice(hit, endI);
-  const b = Math.max(before.lastIndexOf('. '), before.lastIndexOf('? '), before.lastIndexOf('! '));
-  const a = after.slice(t.length).search(/[.?!](\s|$)/);
-  return ((b >= 0 ? before.slice(b + 2) : before) + (a >= 0 ? after.slice(0, t.length + a + 1) : after)).trim();
+  const b = lastStop(before);
+  const am = after.slice(t.length).search(/[.?!](\s|$)|[。！？]/);
+  return ((b >= 0 ? before.slice(b) : before) + (am >= 0 ? after.slice(0, t.length + am + 1) : after)).trim();
 }
 function selectionInfo(){
   const sel = window.getSelection();
@@ -895,13 +959,19 @@ function selectionInfo(){
   return { term, rect, context: isPassage(term) ? '' : contextFor(sel, term) };
 }
 $('viewer').addEventListener('dblclick', () => setTimeout(() => { const i = selectionInfo(); if (i) { hideChip(); lookup(i.term, i.context, i.rect); } }, 10));
+function chipLabel(t){
+  const d = dirFor(t), p = isPassage(t);
+  if (d.from === 'zh') return '🌐 Translate to English';
+  if (d.to === 'zh') return p ? '🌐 Translate to Chinese' : '🔍 Translate';
+  return p ? '🌐 Translate to Arabic · ترجم' : '🔍 Translate · ترجم';
+}
 function maybeChip(){
   setTimeout(() => {
     const i = selectionInfo();
     if (!i) { hideChip(); return; }
     if (card.style.display === 'block') return;
     chip._i = i;
-    chip.textContent = isPassage(i.term) ? '🌐 Translate to Arabic · ترجم' : '🔍 Translate · ترجم';
+    chip.textContent = chipLabel(i.term);
     chip.style.display = 'block';
     const x = i.rect.left + scrollX + i.rect.width / 2 - chip.offsetWidth / 2;
     const y = i.rect.top + scrollY - chip.offsetHeight - 8;
@@ -939,6 +1009,8 @@ document.addEventListener('mousedown', e => {
 });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') { hideCard(); hideChip(); } });
 const isSaved = w => words.some(x => x.w.toLowerCase() === String(w).toLowerCase());
+const srcLine = (dict, py) => '<div class="src">Translation: ' + (settings.engine === 'google' ? 'Google' : 'MyMemory') + (dict ? ' · Definitions: Free Dictionary' : '') + (py ? ' · Pinyin: pinyin-pro' : '') + '</div>';
+const trLabel = l => l === 'ar' ? 'Arabic <span class="ar-ui">العربية</span>' : LANGS[l].name;
 
 function lookup(term, context, rect, below){
   if (isPassage(term)) return translatePassage(term, rect, below);
@@ -946,19 +1018,22 @@ function lookup(term, context, rect, below){
 }
 
 async function lookupWord(term, context, rect, below){
-  const my = ++reqId;
+  const my = ++reqId, dir = dirFor(term);
   card.classList.remove('wide');
-  cur = { kind:'word', term, context, rect, below };
+  cur = { kind:'word', term, context, rect, below, dir };
   card.innerHTML = head(esc(term), '', false) + '<div class="cb"><div class="loading"><div class="spin"></div>Translating…</div></div>';
   placeCard(rect, below);
   bump('lookups');
-  const [tr, dict] = await Promise.allSettled([translate(term), dictionary(term)]);
+  const [tr, dict] = await Promise.allSettled([translate(term, dir.from, dir.to), dir.from === 'en' ? dictionary(term) : Promise.resolve(null)]);
   if (my !== reqId) return;
   cur.tr = tr.status === 'fulfilled' ? tr.value : null;
   cur.trErr = tr.status === 'rejected' ? (tr.reason && tr.reason.message) : '';
   cur.dict = dict.status === 'fulfilled' ? dict.value : null;
   cur.hw = (cur.dict && cur.dict.headword) || term;
-  recent = [{ w:cur.hw, ar: cur.tr ? cur.tr.main : '' }, ...recent.filter(r => r.w.toLowerCase() !== cur.hw.toLowerCase())].slice(0, 24);
+  if (dir.from === 'zh') cur.hwPy = await toPinyin(cur.hw);
+  if (dir.to === 'zh' && cur.tr) { cur.tr.py = cur.tr.py || await toPinyin(cur.tr.main); cur.tr.altsPy = cur.tr.altsPy || await Promise.all(cur.tr.alts.map(toPinyin)); }
+  if (my !== reqId) return;
+  recent = [{ w:cur.hw, ar: cur.tr ? cur.tr.main : '', lang:dir.to }, ...recent.filter(r => r.w.toLowerCase() !== cur.hw.toLowerCase())].slice(0, 24);
   LS.set(uk('recent'), recent);
   renderWord();
   if (settings.autoSentence && context) translateSentence();
@@ -967,59 +1042,76 @@ function head(title, sub, withTools, kind){
   return '<div class="ch"><div style="flex:1;min-width:0"><div class="hw">' + title + '</div>' + (sub ? '<div class="ph2">' + sub + '</div>' : '') + '</div>' +
     (withTools ? '<button class="ib" data-act="speak" title="Pronounce">🔊</button>' : '') +
     (withTools && kind !== 'passage' ? '<button class="ib ' + (isSaved(cur.hw) ? 'saved' : '') + '" data-act="save" title="Save to My Words">' + (isSaved(cur.hw) ? '★' : '☆') + '</button>' : '') +
-    (kind === 'passage' ? '<button class="ib" data-act="copy" title="Copy Arabic">⧉</button>' : '') +
+    (kind === 'passage' ? '<button class="ib" data-act="copy" title="Copy translation">⧉</button>' : '') +
     '<button class="ib" data-act="close" title="Close">✕</button></div>';
 }
+function trBlock(tr, to){
+  if (to === 'ar') return '<div class="arbig">' + esc(tr.main) + '</div>' + (tr.alts && tr.alts.length ? '<div class="alts">' + tr.alts.map(a => '<span>' + esc(a) + '</span>').join('') + '</div>' : '');
+  if (to === 'zh') return '<div class="zhbig"><div style="flex:1"><div class="zh zh-ch">' + esc(tr.main) + '</div>' + (tr.py ? '<div class="py">' + esc(tr.py) + '</div>' : '') + '</div><button class="ib" data-act="speakzh" title="Hear it in Chinese">🔊</button></div>' +
+    (tr.alts && tr.alts.length ? '<div class="altsl">' + tr.alts.map((a,i) => '<span><span class="zh">' + esc(a) + '</span>' + (tr.altsPy && tr.altsPy[i] ? ' <small class="py">' + esc(tr.altsPy[i]) + '</small>' : '') + '</span>').join('') + '</div>' : '');
+  return '<div class="enbig">' + esc(tr.main) + '</div>' + (tr.alts && tr.alts.length ? '<div class="altsl">' + tr.alts.map(a => '<span>' + esc(a) + '</span>').join('') + '</div>' : '');
+}
+function sentBlock(text, to, py){
+  if (to === 'ar') return '<div class="arpara">' + esc(text) + '</div>';
+  if (to === 'zh') return '<div class="zhpara"><div class="zh">' + esc(text) + '</div>' + (py ? '<div class="py" style="margin-top:4px">' + esc(py) + '</div>' : '') + '</div>';
+  return '<div class="enpara">' + esc(text) + '</div>';
+}
 function renderWord(){
-  const c = cur, d = c.dict, tr = c.tr;
-  let html = head(esc(c.hw), d && d.phon ? esc(d.phon) : '', true, 'word') + '<div class="cb">';
-  html += '<div class="sec"><div class="lbl">Arabic <span class="ar-ui">العربية</span></div>';
-  if (tr) {
-    html += '<div class="arbig">' + esc(tr.main) + '</div>';
-    if (tr.alts && tr.alts.length) html += '<div class="alts">' + tr.alts.map(a => '<span>' + esc(a) + '</span>').join('') + '</div>';
-  } else html += '<div class="err">' + esc(c.trErr || 'Translation is not available right now.') + '</div>';
+  const c = cur, d = c.dict, tr = c.tr, to = c.dir.to;
+  const sub = c.dir.from === 'zh' ? (c.hwPy ? '<span class="py">' + esc(c.hwPy) + '</span>' : '') : (d && d.phon ? esc(d.phon) : '');
+  let html = head(c.dir.from === 'zh' ? '<span class="zh">' + esc(c.hw) + '</span>' : esc(c.hw), sub, true, 'word') + '<div class="cb">';
+  html += '<div class="sec"><div class="lbl">' + trLabel(to) + '</div>';
+  html += tr ? trBlock(tr, to) : '<div class="err">' + esc(c.trErr || 'Translation is not available right now.') + '</div>';
   html += '</div>';
   if (d && d.meanings.length) {
-    html += '<div class="sec"><div class="lbl">English meaning <span class="ar-ui">المعنى بالإنجليزية</span></div>';
+    html += '<div class="sec"><div class="lbl">English meaning ' + (to === 'ar' ? '<span class="ar-ui">المعنى بالإنجليزية</span>' : '') + '</div>';
     d.meanings.forEach(m => {
       html += (m.pos ? '<span class="pos">' + esc(m.pos) + '</span>' : '') + '<ol class="defs">' +
         m.defs.map(x => '<li>' + esc(x.d) + (x.ex ? '<span class="eg">“' + esc(x.ex) + '”</span>' : '') + '</li>').join('') + '</ol>';
     });
     html += '</div>';
-  } else if (!/\s/.test(c.term)) {
+  } else if (c.dir.from === 'en' && !/\s/.test(c.term)) {
     html += '<div class="sec"><div class="lbl">English meaning</div><div style="color:var(--muted);font-size:14px">No dictionary entry found for this word (it may be a name or a very technical term).</div></div>';
   }
   if (c.context) {
     const re = new RegExp('(' + c.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'i');
-    html += '<div class="sec"><div class="lbl">In your PDF <span class="ar-ui">في الملف</span></div><div class="ctxbox">' + esc(c.context).replace(re, '<mark>$1</mark>') + '</div>' +
-      '<div id="sentAr" style="margin-top:8px">' + (c.sentAr ? '<div class="arpara">' + esc(c.sentAr) + '</div>' : '<button class="linkbtn" data-act="sentence">🌐 Translate this sentence into Arabic</button>') + '</div></div>';
+    html += '<div class="sec"><div class="lbl">In your PDF ' + (to === 'ar' ? '<span class="ar-ui">في الملف</span>' : '') + '</div><div class="ctxbox' + (c.dir.from === 'zh' ? ' zh' : '') + '">' + esc(c.context).replace(re, '<mark>$1</mark>') + '</div>' +
+      '<div id="sentAr" style="margin-top:8px">' + (c.sentTr ? sentBlock(c.sentTr, to, c.sentPy) : '<button class="linkbtn" data-act="sentence">🌐 Translate this sentence into ' + LANGS[to].name + '</button>') + '</div></div>';
   }
   if (d && d.syn.length) html += '<div class="sec"><div class="lbl">Similar words</div><div class="chips">' + d.syn.map(s => '<button class="chip" data-syn="' + esc(s) + '">' + esc(s) + '</button>').join('') + '</div></div>';
-  html += '<div class="src">Translation: ' + (settings.engine === 'google' ? 'Google' : 'MyMemory') + ' · Definitions: Free Dictionary</div></div>';
+  html += srcLine(!!d, c.dir.from === 'zh' || to === 'zh') + '</div>';
   card.innerHTML = html;
   placeCard(c.rect, c.below);
 }
 async function translateSentence(){
   const c = cur; if (!c || !c.context) return;
   const box = card.querySelector('#sentAr'); if (box) box.innerHTML = '<div class="loading"><div class="spin"></div>Translating the sentence…</div>';
-  try { const r = await translate(c.context); if (cur !== c) return; c.sentAr = r.main; bump('passages'); }
-  catch(e){ if (cur !== c) return; if (box) box.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; return; }
-  const b2 = card.querySelector('#sentAr'); if (b2) b2.innerHTML = '<div class="arpara">' + esc(c.sentAr) + '</div>';
+  try {
+    const r = await translate(c.context, c.dir.from, c.dir.to);
+    if (cur !== c) return;
+    c.sentTr = r.main; c.sentPy = c.dir.to === 'zh' ? await toPinyin(r.main) : '';
+    bump('passages');
+  } catch(e){ if (cur !== c) return; if (box) box.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; return; }
+  const b2 = card.querySelector('#sentAr'); if (b2) b2.innerHTML = sentBlock(c.sentTr, c.dir.to, c.sentPy);
 }
 async function translatePassage(text, rect, below){
-  const my = ++reqId;
+  const my = ++reqId, dir = dirFor(text);
   card.classList.add('wide');
-  cur = { kind:'passage', term:text, rect, below, hw:text };
-  card.innerHTML = head('Arabic translation <span class="ar-ui" style="font-size:18px">· الترجمة</span>', '', false) + '<div class="cb"><div class="loading"><div class="spin"></div>Translating…</div></div>';
+  cur = { kind:'passage', term:text, rect, below, hw:text, dir };
+  const title = LANGS[dir.to].name + ' translation' + (dir.to === 'ar' ? ' <span class="ar-ui" style="font-size:18px">· الترجمة</span>' : '');
+  card.innerHTML = head(title, '', false) + '<div class="cb"><div class="loading"><div class="spin"></div>Translating…</div></div>';
   placeCard(rect, below);
   try {
-    const r = await translate(text);
+    const r = await translate(text, dir.from, dir.to);
     if (my !== reqId) return;
     cur.ar = r.main; bump('passages');
-    card.innerHTML = head('Arabic translation <span class="ar-ui" style="font-size:18px">· الترجمة</span>', '', true, 'passage') +
-      '<div class="cb"><div class="arpara">' + esc(r.main) + '</div>' +
-      '<div class="sec"><div class="lbl">English</div><div class="ctxbox" style="max-height:8em;overflow:auto">' + esc(text) + '</div></div>' +
-      '<div class="src">Translation: ' + (settings.engine === 'google' ? 'Google' : 'MyMemory') + '</div></div>';
+    const zhText = dir.to === 'zh' ? r.main : dir.from === 'zh' ? text : '';
+    card.innerHTML = head(title, '', true, 'passage') +
+      '<div class="cb">' + sentBlock(r.main, dir.to, '') +
+      (zhText ? '<div style="margin-top:6px"><button class="linkbtn" data-act="pinyin">Show pinyin</button><div id="pyBox" class="py hidden" style="margin-top:6px;line-height:1.7"></div></div>' : '') +
+      '<div class="sec"><div class="lbl">' + LANGS[dir.from].name + '</div><div class="ctxbox' + (dir.from === 'zh' ? ' zh' : '') + '" style="max-height:8em;overflow:auto">' + esc(text) + '</div></div>' +
+      srcLine(false, !!zhText) + '</div>';
+    cur.zhText = zhText;
     placeCard(rect, below);
   } catch (e) {
     if (my !== reqId) return;
@@ -1030,14 +1122,25 @@ card.addEventListener('click', async e => {
   const b = e.target.closest('button'); if (!b || !cur) return;
   const act = b.dataset.act;
   if (act === 'close') hideCard();
-  else if (act === 'speak') speak(cur.kind === 'passage' ? cur.term : cur.hw, cur.dict && cur.dict.audio);
+  else if (act === 'speak') {
+    if (cur.dir && cur.dir.from === 'zh') tts(cur.kind === 'passage' ? cur.term : cur.hw, 'zh-CN');
+    else speak(cur.kind === 'passage' ? cur.term : cur.hw, cur.dict && cur.dict.audio);
+  }
+  else if (act === 'speakzh' && cur.tr) tts(cur.tr.main, 'zh-CN');
+  else if (act === 'pinyin') {
+    const box = card.querySelector('#pyBox'); if (!box) return;
+    if (box.classList.contains('hidden')) { box.textContent = 'Loading…'; box.classList.remove('hidden'); box.textContent = await toPinyin(cur.zhText) || 'Pinyin is not available right now.'; b.textContent = 'Hide pinyin'; }
+    else { box.classList.add('hidden'); b.textContent = 'Show pinyin'; }
+  }
   else if (act === 'sentence') translateSentence();
-  else if (act === 'copy') { try { await navigator.clipboard.writeText(cur.ar || ''); toast('Arabic copied'); } catch(err){ toast('Copy was blocked by the browser'); } }
+  else if (act === 'copy') { try { await navigator.clipboard.writeText(cur.ar || ''); toast('Translation copied'); } catch(err){ toast('Copy was blocked by the browser'); } }
   else if (act === 'save') {
     if (isSaved(cur.hw)) { words = words.filter(w => w.w.toLowerCase() !== cur.hw.toLowerCase()); b.textContent = '☆'; b.classList.remove('saved'); toast('Removed from My Words'); sync('lex_delete_word', { p_sid:session.id, p_word:cur.hw }).catch(() => {}); }
     else {
-      const m = cur.dict && cur.dict.meanings[0];
-      words.unshift({ w:cur.hw, ar: cur.tr ? cur.tr.main : '', pos: m ? m.pos : '', def: m && m.defs[0] ? m.defs[0].d : '', phon: cur.dict ? cur.dict.phon : '', audio: cur.dict ? cur.dict.audio : '', ctx: cur.context || '', added: Date.now(), known:0 });
+      const m = cur.dict && cur.dict.meanings[0], zhSrc = cur.dir.from === 'zh';
+      words.unshift({ w:cur.hw, ar: cur.tr ? cur.tr.main : '', lang:cur.dir.to, py: zhSrc ? (cur.hwPy || '') : (cur.tr && cur.tr.py) || '',
+        pos: m ? m.pos : '', def: m && m.defs[0] ? m.defs[0].d : (zhSrc && cur.tr && cur.tr.alts.length ? 'Also: ' + cur.tr.alts.join(', ') : ''),
+        phon: zhSrc ? (cur.hwPy || '') : (cur.dict ? cur.dict.phon : ''), audio: cur.dict ? cur.dict.audio : '', ctx: cur.context || '', added: Date.now(), known:0 });
       b.textContent = '★'; b.classList.add('saved'); toast('Saved to My Words ★');
       sync('lex_save_word', { p_sid:session.id, p:words[0] }).catch(() => {});
     }
@@ -1045,24 +1148,31 @@ card.addEventListener('click', async e => {
   }
   else if (b.dataset.syn) lookupWord(b.dataset.syn, '', cur.rect, cur.below);
 });
+/* translation cell used in lists */
+function trHTML(w, big){
+  const l = w.lang || 'ar';
+  if (l === 'zh') return '<div class="zh">' + esc(w.ar) + '</div>' + (w.py ? '<div class="py">' + esc(w.py) + '</div>' : '');
+  if (l === 'en') return '<div class="en-t">' + esc(w.ar) + '</div>';
+  return '<div class="ar">' + esc(w.ar || '—') + '</div>';
+}
 
 /* ================= dashboard ================= */
 const PALETTE = ['#4f46e5','#0e9384','#e8930c','#e5484d','#7c3aed','#0284c7'];
 const SCIENCE = [
-  ['hypothesis','فَرَضِيَّة','noun','A possible explanation that can be tested by an experiment.'],
-  ['photosynthesis','البناء الضوئي','noun','The process plants use to make food from light, water and carbon dioxide.'],
-  ['velocity','السرعة المتجهة','noun','The speed of something in a given direction.'],
-  ['molecule','جُزَيء','noun','The smallest unit of a substance, made of atoms joined together.'],
-  ['ecosystem','نظام بيئي','noun','All the living things in an area and how they interact with their environment.'],
-  ['friction','الاحتكاك','noun','A force that slows down objects sliding against each other.'],
-  ['evaporation','التبخُّر','noun','When a liquid changes into a gas.'],
-  ['density','الكثافة','noun','How much mass is packed into a given volume.'],
-  ['circuit','دائرة كهربائية','noun','A closed path that electric current flows around.'],
-  ['organism','كائن حي','noun','Any living thing, such as a plant, animal or bacterium.'],
-  ['variable','مُتغيِّر','noun','A factor that can change in an experiment.'],
-  ['gravity','الجاذبية','noun','The force that pulls objects towards each other, such as towards Earth.'],
-  ['conductor','موصِل','noun','A material that lets heat or electricity pass through easily.'],
-  ['habitat','موطن','noun','The natural home of a plant or animal.']
+  ['hypothesis','فَرَضِيَّة','noun','A possible explanation that can be tested by an experiment.','假设'],
+  ['photosynthesis','البناء الضوئي','noun','The process plants use to make food from light, water and carbon dioxide.','光合作用'],
+  ['velocity','السرعة المتجهة','noun','The speed of something in a given direction.','速度'],
+  ['molecule','جُزَيء','noun','The smallest unit of a substance, made of atoms joined together.','分子'],
+  ['ecosystem','نظام بيئي','noun','All the living things in an area and how they interact with their environment.','生态系统'],
+  ['friction','الاحتكاك','noun','A force that slows down objects sliding against each other.','摩擦力'],
+  ['evaporation','التبخُّر','noun','When a liquid changes into a gas.','蒸发'],
+  ['density','الكثافة','noun','How much mass is packed into a given volume.','密度'],
+  ['circuit','دائرة كهربائية','noun','A closed path that electric current flows around.','电路'],
+  ['organism','كائن حي','noun','Any living thing, such as a plant, animal or bacterium.','生物'],
+  ['variable','مُتغيِّر','noun','A factor that can change in an experiment.','变量'],
+  ['gravity','الجاذبية','noun','The force that pulls objects towards each other, such as towards Earth.','重力'],
+  ['conductor','موصِل','noun','A material that lets heat or electricity pass through easily.','导体'],
+  ['habitat','موطن','noun','The natural home of a plant or animal.','栖息地']
 ];
 async function renderDashboard(){
   $('heroHello').textContent = session ? 'Welcome, ' + session.name.split(' ')[0] + ' 👋' : 'Read · Understand · Learn';
@@ -1096,16 +1206,19 @@ async function renderDashboard(){
   svg += '<text x="20" y="214" font-size="12" fill="#6b7385" font-family="Inter">' + total + ' look‑ups and translations in the last 7 days</text></svg>';
   $('chart').innerHTML = svg;
   // recent
-  $('recentChips').innerHTML = recent.length ? recent.slice(0,14).map(r => '<button class="chip" data-recent="' + esc(r.w) + '">' + esc(r.w) + (r.ar ? '<span class="ar">' + esc(r.ar) + '</span>' : '') + '</button>').join('')
+  $('recentChips').innerHTML = recent.length ? recent.slice(0,14).map(r => '<button class="chip" data-recent="' + esc(r.w) + '"><span class="' + (HAS_ZH.test(r.w) ? 'zh' : '') + '">' + esc(r.w) + '</span>' + (r.ar ? '<span class="' + tcls(r.lang || 'ar') + '">' + esc(r.ar) + '</span>' : '') + '</button>').join('')
     : '<div class="emptyline" style="width:100%">Words you look up will appear here.</div>';
   // word of the day
-  const pool = words.length >= 5 ? words.map(w => [w.w, w.ar, w.pos, w.def]) : SCIENCE;
+  const zhMode = settings.lang === 'zh';
+  const pool = words.length >= 5 ? words.map(w => ({ w:w.w, t:w.ar, lang:w.lang || 'ar', py:w.py, pos:w.pos, def:w.def }))
+    : SCIENCE.map(x => ({ w:x[0], t: zhMode ? x[4] : x[1], lang: zhMode ? 'zh' : 'ar', py:'', pos:x[2], def:x[3] }));
   const dayN = Math.floor(Date.now() / 864e5), wd = pool[dayN % pool.length];
-  $('wotd').innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div class="w" style="flex:1">' + esc(wd[0]) + '</div><button class="ib" id="wotdSpeak" title="Pronounce">🔊</button></div>' +
-    '<div class="a">' + esc(wd[1]) + '</div>' + (wd[2] ? '<span class="pos">' + esc(wd[2]) + '</span>' : '') +
-    '<div style="color:#4a5266;line-height:1.5;margin-top:4px">' + esc(wd[3] || '') + '</div>' +
+  if (wd.lang === 'zh' && !wd.py) wd.py = await toPinyin(wd.t);
+  $('wotd').innerHTML = '<div style="display:flex;align-items:center;gap:10px"><div class="w ' + (HAS_ZH.test(wd.w) ? 'zh' : '') + '" style="flex:1">' + esc(wd.w) + '</div><button class="ib" id="wotdSpeak" title="Pronounce">🔊</button></div>' +
+    '<div class="' + tcls(wd.lang) + '">' + esc(wd.t) + '</div>' + (wd.lang === 'zh' && wd.py ? '<div class="py" style="margin-bottom:6px">' + esc(wd.py) + '</div>' : '') + (wd.pos ? '<span class="pos">' + esc(wd.pos) + '</span>' : '') +
+    '<div style="color:#4a5266;line-height:1.5;margin-top:4px">' + esc(wd.def || '') + '</div>' +
     '<div style="margin-top:12px;font-size:12.5px;color:#9a7a3a">' + (words.length >= 5 ? 'From your saved words' : 'Science word of the day') + '</div>';
-  $('wotdSpeak').onclick = () => tts(wd[0]);
+  $('wotdSpeak').onclick = () => tts(wd.w, HAS_ZH.test(wd.w) ? 'zh-CN' : 'en-US');
 }
 function timeAgo(t){
   const s = (Date.now() - t) / 1000;
@@ -1126,32 +1239,32 @@ $('recentChips').addEventListener('click', e => {
 /* ================= vocabulary ================= */
 function renderVocab(){
   const q = $('vSearch').value.trim().toLowerCase();
-  const list = words.filter(w => !q || w.w.toLowerCase().includes(q) || (w.ar || '').includes(q) || (w.def || '').toLowerCase().includes(q));
+  const list = words.filter(w => !q || w.w.toLowerCase().includes(q) || (w.ar || '').toLowerCase().includes(q) || (w.py || '').toLowerCase().includes(q) || (w.def || '').toLowerCase().includes(q));
   $('vCount').textContent = words.length ? (list.length + ' of ' + words.length + ' words') : '';
   const T = $('vTable');
   if (!words.length) { T.innerHTML = '<tr><td><div class="emptyline" style="padding:40px">No saved words yet.<br>In the Reader, double‑click a word and press ☆ to save it here.</div></td></tr>'; return; }
-  T.innerHTML = '<thead><tr><th>Word</th><th style="text-align:right">Arabic</th><th>Meaning</th><th>Level</th><th></th></tr></thead><tbody>' +
+  T.innerHTML = '<thead><tr><th>Word</th><th>Translation</th><th>Meaning</th><th>Level</th><th></th></tr></thead><tbody>' +
     list.map(w => {
       const k = w.known || 0, lv = k >= 3 ? ['Mastered','var(--teal-s)','var(--teal)'] : k >= 1 ? ['Learning','var(--amber-s)','#a15c00'] : ['New','var(--indigo-s)','var(--indigo)'];
-      return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + (w.phon ? ' · ' + esc(w.phon) : '') + '</div></td>' +
-        '<td class="a">' + esc(w.ar) + '</td><td class="d">' + esc(w.def || '') + '</td>' +
+      return '<tr><td><div class="w' + (HAS_ZH.test(w.w) ? ' zh' : '') + '">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + (w.phon ? (w.pos ? ' · ' : '') + esc(w.phon) : '') + '</div></td>' +
+        '<td class="tcell">' + trHTML(w) + '</td><td class="d">' + esc(w.def || '') + '</td>' +
         '<td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td>' +
         '<td style="white-space:nowrap"><button class="ib" data-vspeak="' + esc(w.w) + '" title="Pronounce">🔊</button><button class="ib" data-vdel="' + esc(w.w) + '" title="Delete">🗑</button></td></tr>';
     }).join('') + '</tbody>';
 }
 $('vSearch').oninput = renderVocab;
 $('vTable').addEventListener('click', e => {
-  const s = e.target.closest('[data-vspeak]'); if (s) { const w = words.find(x => x.w === s.dataset.vspeak); speak(s.dataset.vspeak, w && w.audio); }
+  const s = e.target.closest('[data-vspeak]'); if (s) { const w = words.find(x => x.w === s.dataset.vspeak); if (HAS_ZH.test(s.dataset.vspeak)) tts(s.dataset.vspeak, 'zh-CN'); else speak(s.dataset.vspeak, w && w.audio); }
   const d = e.target.closest('[data-vdel]'); if (d) { words = words.filter(x => x.w !== d.dataset.vdel); saveWords(); renderVocab(); sync('lex_delete_word', { p_sid:session.id, p_word:d.dataset.vdel }).catch(() => {}); }
 });
 $('vCopy').onclick = async () => {
-  const txt = words.map(w => w.w + ' — ' + (w.ar || '') + (w.def ? ' — ' + w.def : '')).join('\n');
+  const txt = words.map(w => w.w + ' — ' + (w.ar || '') + (w.lang === 'zh' && w.py ? ' (' + w.py + ')' : '') + (w.def ? ' — ' + w.def : '')).join('\n');
   try { await navigator.clipboard.writeText(txt); toast('Copied ' + words.length + ' words'); } catch(e){ toast('Copy was blocked by the browser'); }
 };
 $('vCsv').onclick = () => {
   if (!words.length) { toast('No words to export yet'); return; }
   const q = s => '"' + String(s || '').replace(/"/g,'""') + '"';
-  const rows = [['Word','Arabic','Part of speech','Meaning','Sentence from PDF']].concat(words.map(w => [w.w, w.ar, w.pos, w.def, w.ctx]));
+  const rows = [['Word','Translation','Language','Pinyin','Part of speech','Meaning','Sentence from PDF']].concat(words.map(w => [w.w, w.ar, LANGS[w.lang || 'ar'].name, w.py, w.pos, w.def, w.ctx]));
   const blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\r\n')], { type:'text/csv;charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-words.csv';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
@@ -1174,12 +1287,12 @@ function renderCard(){
     $('fcAgain').onclick = () => startDeck(true); return;
   }
   const w = deck[di];
-  W.innerHTML = '<div class="fc" id="fc"><div class="fc-in"><div class="fc-f"><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.phon || w.pos || '') + '</div><div class="tap">Tap to flip · اضغط للقلب</div></div>' +
-    '<div class="fc-b"><div class="a">' + esc(w.ar || '—') + '</div><div class="d">' + esc(w.def || '') + '</div></div></div></div>' +
+  W.innerHTML = '<div class="fc" id="fc"><div class="fc-in"><div class="fc-f"><div class="w' + (HAS_ZH.test(w.w) ? ' zh' : '') + '">' + esc(w.w) + '</div><div class="p">' + esc(w.phon || w.pos || '') + '</div><div class="tap">Tap to flip · اضغط للقلب</div></div>' +
+    '<div class="fc-b">' + trHTML(w) + '<div class="d">' + esc(w.def || '') + '</div></div></div></div>' +
     '<div class="fc-acts"><button class="btn" id="fcSpeak">🔊 Listen</button><button class="btn again" id="fcNo">↺ Still learning</button><button class="btn good" id="fcYes">✓ I knew it</button></div>' +
     '<div class="fc-prog">Card ' + (di + 1) + ' of ' + deck.length + '</div>';
   $('fc').onclick = () => $('fc').classList.toggle('flip');
-  $('fcSpeak').onclick = () => speak(w.w, w.audio);
+  $('fcSpeak').onclick = () => HAS_ZH.test(w.w) ? tts(w.w, 'zh-CN') : speak(w.w, w.audio);
   const mark = d => { const ww = words.find(x => x.w === w.w); if (ww) { ww.known = Math.max(0, (ww.known || 0) + d); saveWords(); sync('lex_set_known', { p_sid:session.id, p_word:ww.w, p_known:ww.known }).catch(() => {}); } di++; renderCard(); };
   $('fcYes').onclick = () => mark(1); $('fcNo').onclick = () => mark(-1);
 }
@@ -1191,10 +1304,12 @@ function renderSettings(){
   $('sEmail').value = settings.email; $('sKey').value = settings.key;
   $('sRate').value = settings.rate; $('sRateV').textContent = (+settings.rate).toFixed(1);
   $('sAuto').checked = !!settings.autoSentence;
+  document.querySelectorAll('input[name=tlang]').forEach(r => r.checked = r.value === (settings.lang || 'ar'));
   $('sWho').textContent = session ? session.name : '';
   $('fEmail').classList.toggle('hidden', settings.engine !== 'mymemory');
   $('fKey').classList.toggle('hidden', settings.engine !== 'google');
 }
+document.querySelectorAll('input[name=tlang]').forEach(r => r.onchange = () => { settings.lang = r.value; saveSettings(); syncLoginLang(); toast(r.value === 'zh' ? 'Translating into Chinese' : 'Translating into Arabic'); });
 document.querySelectorAll('input[name=engine]').forEach(r => r.onchange = () => { settings.engine = r.value; saveSettings(); renderSettings(); });
 $('sEmail').onchange = () => { settings.email = $('sEmail').value.trim(); saveSettings(); toast('Saved'); };
 $('sKey').onchange = () => { settings.key = $('sKey').value.trim(); saveSettings(); toast('Saved'); };
@@ -1202,7 +1317,7 @@ $('sRate').oninput = () => { settings.rate = +$('sRate').value; $('sRateV').text
 $('sAuto').onchange = () => { settings.autoSentence = $('sAuto').checked; saveSettings(); };
 $('sTest').onclick = async () => {
   const o = $('sTestOut'); o.innerHTML = '<div class="loading"><div class="spin"></div>Testing…</div>';
-  try { tCache.clear(); const r = await translate('Plants need sunlight to grow.'); o.innerHTML = '✅ Working: <span class="ar" style="font-size:19px">' + esc(r.main) + '</span>'; }
+  try { tCache.clear(); const to = settings.lang === 'zh' ? 'zh' : 'ar'; const r = await translate('Plants need sunlight to grow.', 'en', to); o.innerHTML = '✅ Working: <span class="' + tcls(to) + '" style="font-size:19px">' + esc(r.main) + '</span>'; }
   catch(e){ o.innerHTML = '<span class="err">❌ ' + esc(e.message || 'Could not connect. Check your internet connection.') + '</span>'; }
 };
 twoTap($('sReset'), 'Tap again to delete your words', async () => {
@@ -1223,6 +1338,8 @@ function twoTap(btn, msg, fn){
 let tt; function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2400); }
 
 /* ================= login ================= */
+function syncLoginLang(){ document.querySelectorAll('input[name=llang]').forEach(r => r.checked = r.value === (settings.lang || 'ar')); }
+syncLoginLang();
 function applySession(){
   $('meBox').classList.toggle('hidden', !session);
   if (session) { $('meName').textContent = session.name; $('meAv').textContent = session.name.trim().charAt(0).toUpperCase(); }
@@ -1242,6 +1359,7 @@ async function refreshFromServer(){
 $('loginForm').onsubmit = async e => {
   e.preventDefault();
   const name = $('loginName').value.replace(/\s+/g,' ').trim();
+  const ll = document.querySelector('input[name=llang]:checked'); if (ll) { settings.lang = ll.value; saveSettings(); }
   $('loginErr').textContent = '';
   if (name.length < 2) { $('loginErr').textContent = 'Please type your full name.'; return; }
   $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
@@ -1312,9 +1430,9 @@ $('tTable').addEventListener('click', async e => {
     try {
       const ws = await rpc('lex_teacher_words', { p_pin:tPin, p_sid:s.id }) || [];
       D.innerHTML = '<div class="panel-h"><h3>' + esc(s.name) + ' — saved words (' + ws.length + ')</h3><button class="ib" id="tDetClose">✕</button></div><div class="panel-b" style="overflow:auto">' +
-        (ws.length ? '<table class="vt"><thead><tr><th>Word</th><th style="text-align:right">Arabic</th><th>Meaning</th><th>Level</th></tr></thead><tbody>' +
+        (ws.length ? '<table class="vt"><thead><tr><th>Word</th><th>Translation</th><th>Meaning</th><th>Level</th></tr></thead><tbody>' +
           ws.map(w => { const k = w.known || 0, lv = k >= 3 ? ['Mastered','var(--teal-s)','var(--teal)'] : k >= 1 ? ['Learning','var(--amber-s)','#a15c00'] : ['New','var(--indigo-s)','var(--indigo)'];
-            return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + '</div></td><td class="a">' + esc(w.ar) + '</td><td class="d">' + esc(w.def || '') + '</td><td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td></tr>'; }).join('') +
+            return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + '</div></td><td class="tcell">' + trHTML(w) + '</td><td class="d">' + esc(w.def || '') + '</td><td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td></tr>'; }).join('') +
           '</tbody></table>' : '<div class="emptyline">This student has not saved any words yet.</div>') + '</div>';
       $('tDetClose').onclick = () => D.classList.add('hidden');
     } catch(err){ D.innerHTML = '<div class="panel-b err">' + esc(err.message) + '</div>'; }

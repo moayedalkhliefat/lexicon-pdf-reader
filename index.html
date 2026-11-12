@@ -277,6 +277,14 @@ table.vt{width:100%;border-collapse:separate;border-spacing:0}
 .lbox input{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;text-align:center}
 .lbox input:focus{outline:none;border-color:var(--indigo)}
 .lbox .btn.pri{width:100%;justify-content:center;padding:12px;font-size:16px;margin-top:12px}
+.ltabs{display:flex;background:#f4f1e8;border-radius:12px;padding:4px;margin-bottom:14px}
+.ltabs button{flex:1;border:none;background:transparent;border-radius:9px;padding:9px;font-weight:600;color:var(--muted)}
+.ltabs button.on{background:#fff;color:var(--indigo);box-shadow:var(--soft)}
+.lq{position:relative}
+.lqpop{position:absolute;top:calc(100% + 8px);left:0;z-index:30;width:290px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px}
+.lqpop .lbl{margin:0 0 6px}
+.lqpop .langpick{margin:0 0 12px}
+.lqpop .langpick:last-child{margin-bottom:0}
 .lbox .note{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.5}
 .lbox .by{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
 .lbox .by b{font-family:Fraunces,serif;color:var(--ink)}
@@ -407,6 +415,15 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
         <button id="zOut" title="Zoom out">−</button><span id="zVal">100%</span><button id="zIn" title="Zoom in">+</button>
       </div>
       <span class="pinfo" id="pInfo"></span>
+      <div class="lq">
+        <button class="btn sm" id="lqBtn" type="button" title="Translation languages">🌐 <span id="lqLbl"></span> ▾</button>
+        <div class="lqpop hidden" id="lqPop">
+          <div class="lbl">Translate English into</div>
+          <div class="langpick"><label><input type="radio" name="qlang" value="ar"> العربية</label><label><input type="radio" name="qlang" value="zh"> 中文</label></div>
+          <div class="lbl">Translate Chinese into</div>
+          <div class="langpick"><label><input type="radio" name="qzh" value="en"> English</label><label><input type="radio" name="qzh" value="ar"> العربية</label></div>
+        </div>
+      </div>
       <form class="qlook" id="qlook">
         <input id="qInput" placeholder="Type English or Chinese text…" autocomplete="off">
         <button class="btn teal" type="submit">ترجم</button>
@@ -493,7 +510,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
           <div class="panel-b">
             <div class="field"><label for="sRate">Pronunciation speed: <span id="sRateV">1.0</span>×</label><input type="range" id="sRate" min="0.6" max="1.3" step="0.1" style="width:100%;accent-color:var(--indigo)"></div>
             <div class="field"><label><input type="checkbox" id="sAuto" style="accent-color:var(--indigo)"> Translate the sentence automatically when I look up a word</label><small>Uses a little more of the daily translation limit.</small></div>
-            <div class="field"><label>Your account</label><small>Signed in as <b id="sWho"></b>. Your saved words and progress are stored online, so they follow you on any device when you sign in with the same name. Recent PDFs stay on this device.</small></div>
+            <div class="field"><label>Your account</label><small>Signed in as <b id="sWho"></b>. Your saved words and progress are stored online, so they follow you on any device when you log in with your name and password. Your language choices are saved to your account too. Recent PDFs stay on this device.</small></div>
             <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="sSignOut">Sign out</button><button class="btn" id="sReset" style="color:var(--coral)">Delete my saved words</button><button class="btn" data-go="teacher">🎓 Teacher dashboard</button></div>
           </div>
           <div class="panel-h" style="padding-top:4px"><h3>About</h3></div>
@@ -563,23 +580,16 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
   <div class="lbox">
     <div class="mark"><span>L</span></div>
     <h1>Welcome to Lexicon</h1>
-    <div class="ar">أهلاً بك — اكتب اسمك للدخول</div>
+    <div class="ar">أهلاً بك — سجّل دخولك باسمك وكلمة المرور</div>
+    <div class="ltabs"><button type="button" class="on" data-mode="login">Log in</button><button type="button" data-mode="signup">Create account</button></div>
     <form id="loginForm">
-      <input id="loginName" placeholder="Your full name" autocomplete="name" maxlength="60">
-      <div class="note" style="margin-top:12px;margin-bottom:-4px">Translate English into:</div>
-      <div class="langpick">
-        <label><input type="radio" name="llang" value="ar"> العربية · Arabic</label>
-        <label><input type="radio" name="llang" value="zh"> 中文 · Chinese</label>
-      </div>
-      <div class="note" style="margin-top:10px;margin-bottom:-4px">Translate Chinese into:</div>
-      <div class="langpick">
-        <label><input type="radio" name="zl" value="en"> English</label>
-        <label><input type="radio" name="zl" value="ar"> العربية · Arabic</label>
-      </div>
-      <button class="btn pri" type="submit" id="loginBtn">Start reading →</button>
+      <input id="loginName" placeholder="Your full name" autocomplete="username" maxlength="60">
+      <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password" maxlength="72" style="margin-top:10px">
+      <input id="loginPass2" class="hidden" type="password" placeholder="Type the password again" autocomplete="new-password" maxlength="72" style="margin-top:10px">
+      <button class="btn pri" type="submit" id="loginBtn">Log in →</button>
     </form>
     <div class="err" id="loginErr" style="margin-top:8px"></div>
-    <div class="note">Type your <b>full name</b> the same way every time — your saved words will be waiting for you on any device.</div>
+    <div class="note" id="loginNote">Forgot your password? Ask your teacher to reset it.</div>
     <div class="note"><button class="linkbtn" id="toTeacher">🎓 I'm the teacher</button></div>
     <div class="by">Designed by <b>Mr. Moayed Alkhliefat</b></div>
   </div>
@@ -1361,8 +1371,8 @@ function renderSettings(){
   $('fEmail').classList.toggle('hidden', settings.engine !== 'mymemory');
   $('fKey').classList.toggle('hidden', settings.engine !== 'google');
 }
-document.querySelectorAll('input[name=tlang]').forEach(r => r.onchange = () => { settings.lang = r.value; saveSettings(); syncLoginLang(); toast(r.value === 'zh' ? 'Translating into Chinese' : 'Translating into Arabic'); });
-document.querySelectorAll('input[name=zlang]').forEach(r => r.onchange = () => { settings.zhTo = r.value; saveSettings(); syncLoginLang(); toast(r.value === 'ar' ? 'Chinese → Arabic' : 'Chinese → English'); });
+document.querySelectorAll('input[name=tlang],input[name=qlang]').forEach(r => r.onchange = () => setLang('lang', r.value));
+document.querySelectorAll('input[name=zlang],input[name=qzh]').forEach(r => r.onchange = () => setLang('zhTo', r.value));
 document.querySelectorAll('input[name=engine]').forEach(r => r.onchange = () => { settings.engine = r.value; saveSettings(); renderSettings(); });
 $('sEmail').onchange = () => { settings.email = $('sEmail').value.trim(); saveSettings(); toast('Saved'); };
 $('sKey').onchange = () => { settings.key = $('sKey').value.trim(); saveSettings(); toast('Saved'); };
@@ -1391,7 +1401,19 @@ function twoTap(btn, msg, fn){
 let tt; function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2400); }
 
 /* ================= login ================= */
-function syncLoginLang(){ document.querySelectorAll('input[name=llang]').forEach(r => r.checked = r.value === (settings.lang || 'ar')); document.querySelectorAll('input[name=zl]').forEach(r => r.checked = r.value === (settings.zhTo || 'en')); }
+function syncLoginLang(){
+  const L = settings.lang || 'ar', Z = settings.zhTo || 'en';
+  document.querySelectorAll('input[name=tlang],input[name=qlang]').forEach(r => r.checked = r.value === L);
+  document.querySelectorAll('input[name=zlang],input[name=qzh]').forEach(r => r.checked = r.value === Z);
+  $('lqLbl').textContent = 'EN→' + (L === 'zh' ? '中文' : 'عربي') + ' · 中→' + (Z === 'ar' ? 'عربي' : 'EN');
+}
+function setLang(k, v){
+  settings[k] = v; saveSettings(); syncLoginLang(); hideCard();
+  toast(k === 'lang' ? (v === 'zh' ? 'English → Chinese' : 'English → Arabic') : (v === 'ar' ? 'Chinese → Arabic' : 'Chinese → English'));
+  if (session) sync('lex_set_prefs', { p_sid:session.id, p:{ lang:settings.lang, zhTo:settings.zhTo } }).catch(() => {});
+}
+$('lqBtn').onclick = e => { e.stopPropagation(); $('lqPop').classList.toggle('hidden'); };
+document.addEventListener('click', e => { if (!e.target.closest('.lq')) $('lqPop').classList.add('hidden'); });
 syncLoginLang();
 function applySession(){
   $('meBox').classList.toggle('hidden', !session);
@@ -1401,37 +1423,55 @@ async function refreshFromServer(){
   if (!session) return;
   try {
     const d = await rpc('lex_get_data', { p_sid:session.id });
-    if (!d) { signOut(); return; }
+    if (!d) { signOut(); toast('Please log in again.'); return; }
     words = d.words || [];
     stats = Object.assign({ lookups:0, passages:0, docs:0, daily:{} }, d.stats || {});
     if (d.files) { fileInfo = { used:d.files.used, limits:d.files.limits }; updateQuota(); }
+    if (d.prefs) { if (d.prefs.lang) settings.lang = d.prefs.lang; if (d.prefs.zhTo) settings.zhTo = d.prefs.zhTo; saveSettings(); syncLoginLang(); }
     saveWords(); LS.set(uk('stats'), stats); setSync();
     const v = location.hash.slice(1) || 'dashboard';
     if (v === 'dashboard') renderDashboard(); else if (v === 'vocabulary') renderVocab(); else if (v === 'flashcards') startDeck(false);
   } catch(e){ setSync(true); }
 }
+let loginMode = 'login';
+const modeBtnText = () => loginMode === 'signup' ? 'Create my account →' : 'Log in →';
+document.querySelectorAll('.ltabs button').forEach(b => b.onclick = () => {
+  loginMode = b.dataset.mode;
+  document.querySelectorAll('.ltabs button').forEach(x => x.classList.toggle('on', x === b));
+  $('loginPass2').classList.toggle('hidden', loginMode !== 'signup');
+  $('loginPass').setAttribute('autocomplete', loginMode === 'signup' ? 'new-password' : 'current-password');
+  $('loginPass').placeholder = loginMode === 'signup' ? 'Choose a password (at least 4 characters)' : 'Password';
+  $('loginNote').innerHTML = loginMode === 'signup' ? 'Use your <b>full name</b> (first and family name). Remember your password — you will need it on every device.' : 'Forgot your password? Ask your teacher to reset it.';
+  $('loginBtn').textContent = modeBtnText(); $('loginErr').textContent = '';
+});
 $('loginForm').onsubmit = async e => {
   e.preventDefault();
-  const name = $('loginName').value.replace(/\s+/g,' ').trim();
-  const ll = document.querySelector('input[name=llang]:checked'), zl = document.querySelector('input[name=zl]:checked'); if (ll) settings.lang = ll.value; if (zl) settings.zhTo = zl.value; saveSettings();
+  const name = $('loginName').value.replace(/\s+/g,' ').trim(), pass = $('loginPass').value;
   $('loginErr').textContent = '';
   if (name.length < 2) { $('loginErr').textContent = 'Please type your full name.'; return; }
-  $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
+  if (!pass) { $('loginErr').textContent = 'Please type your password.'; return; }
+  if (loginMode === 'signup') {
+    if (pass.length < 4) { $('loginErr').textContent = 'Your password must have at least 4 characters.'; return; }
+    if (pass !== $('loginPass2').value) { $('loginErr').textContent = 'The two passwords are not the same.'; return; }
+  }
+  $('loginBtn').disabled = true; $('loginBtn').textContent = loginMode === 'signup' ? 'Creating your account…' : 'Logging in…';
   try {
-    const r = await rpc('lex_login', { p_name:name });
+    const r = await rpc(loginMode === 'signup' ? 'lex_signup' : 'lex_login', { p_name:name, p_password:pass });
     session = { id:r.id, name:r.name }; LS.set('session', session);
     loadCache(); applySession();
     $('login').classList.remove('show');
     await refreshFromServer();
-    toast('Welcome, ' + session.name + '!');
+    if (loginMode === 'signup') sync('lex_set_prefs', { p_sid:session.id, p:{ lang:settings.lang, zhTo:settings.zhTo } }).catch(() => {});
+    $('loginPass').value = ''; $('loginPass2').value = '';
+    toast((loginMode === 'signup' ? 'Account created. Welcome, ' : 'Welcome back, ') + session.name + '!');
     show(location.hash.slice(1) || 'dashboard');
   } catch(err){ $('loginErr').textContent = err.message; }
-  $('loginBtn').disabled = false; $('loginBtn').textContent = 'Start reading →';
+  $('loginBtn').disabled = false; $('loginBtn').textContent = modeBtnText();
 };
 function signOut(){
   session = null; LS.set('session', null);
   words = []; recent = []; stats = { lookups:0, passages:0, docs:0, daily:{} };
-  applySession(); $('loginName').value = '';
+  applySession(); $('loginName').value = ''; $('loginPass').value = ''; $('loginPass2').value = '';
   go('dashboard'); show('dashboard');
 }
 $('signOut').onclick = signOut;
@@ -1490,6 +1530,7 @@ $('tTable').addEventListener('click', async e => {
       D.innerHTML = '<div class="panel-h"><h3>' + esc(s.name) + '</h3><button class="ib" id="tDetClose">✕</button></div>' +
         '<div class="panel-b"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><b style="font-family:Fraunces,serif;font-size:16px">Files · ' + usedN + ' / ' + tLimits.max_files + ' used</b><span class="spacer"></span>' +
         '<button class="btn sm" data-treset="' + s.id + '">↺ Reset file count</button></div>' +
+        '<form class="tpw" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:4px 0 14px;padding:10px 12px;background:#fbf9f3;border-radius:12px"><b style="font-size:14px">🔑 New password</b><input class="search" type="text" name="pw" placeholder="At least 4 characters" style="width:200px" autocomplete="off"><button class="btn sm pri" type="submit">Set password</button><span class="pwmsg" style="font-size:13.5px"></span></form>' +
         (fs.length ? '<table class="vt"><thead><tr><th>File</th><th>Pages</th><th>First opened</th><th>Counts?</th></tr></thead><tbody>' +
           fs.map(f => '<tr><td>' + esc(f.name) + '</td><td>' + f.pages + (f.pages > tLimits.max_pages ? ' <span class="p" style="color:var(--muted)">(first ' + tLimits.max_pages + ' shown)</span>' : '') + '</td><td style="white-space:nowrap">' + new Date(f.first).toLocaleDateString() + '</td><td>' + (f.counted ? '<span class="lvl" style="background:var(--indigo-s);color:var(--indigo)">Yes</span>' : '<span class="lvl" style="background:#f2efe6;color:var(--muted)">Reset</span>') + '</td></tr>').join('') + '</tbody></table>'
           : '<div class="emptyline">No files opened yet.</div>') + '</div>' +
@@ -1499,6 +1540,13 @@ $('tTable').addEventListener('click', async e => {
             return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + '</div></td><td class="tcell">' + trHTML(w) + '</td><td class="d">' + esc(w.def || '') + '</td><td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td></tr>'; }).join('') +
           '</tbody></table>' : '<div class="emptyline">This student has not saved any words yet.</div>') + '</div>';
       $('tDetClose').onclick = () => D.classList.add('hidden');
+      D.querySelector('.tpw').onsubmit = async ev => {
+        ev.preventDefault(); const f = ev.currentTarget, m = f.querySelector('.pwmsg'), pw = f.pw.value.trim();
+        if (pw.length < 4) { m.innerHTML = '<span class="err">At least 4 characters.</span>'; return; }
+        m.textContent = 'Saving…';
+        try { await rpc('lex_teacher_set_password', { p_pin:tPin, p_student:s.id, p_new:pw }); m.innerHTML = '✅ Done. Tell ' + esc(s.name.split(' ')[0]) + ' the new password: <b>' + esc(pw) + '</b>'; f.pw.value = ''; }
+        catch(err){ m.innerHTML = '<span class="err">' + esc(err.message) + '</span>'; }
+      };
       D.querySelector('[data-treset]').onclick = async ev => {
         const b = ev.currentTarget;
         if (!b.dataset.arm) { b.dataset.arm = '1'; b.textContent = 'Tap again to reset'; setTimeout(() => { if (b.isConnected) { delete b.dataset.arm; b.textContent = '↺ Reset file count'; } }, 3500); return; }

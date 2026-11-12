@@ -137,6 +137,7 @@ h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;letter-spacing:-.01em}
 .page{position:relative;margin:0 auto 20px;background:#fff;box-shadow:0 2px 6px rgba(22,33,62,.10),0 10px 26px rgba(22,33,62,.07);border-radius:3px}
 .page canvas{display:block;width:100%;height:100%;border-radius:3px}
 .page .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a8a28f;font-size:13px}
+.capnote{max-width:720px;margin:0 auto 20px;padding:14px 18px;border-radius:14px;background:var(--amber-s);border:1px solid #f3dfb8;color:#7a4b00;text-align:center;line-height:1.5}
 .page .scan{position:absolute;left:0;right:0;bottom:0;padding:8px;text-align:center;font-size:12.5px;background:var(--amber-s);color:#8a5a00}
 .bigdrop{max-width:720px;margin:6vh auto;padding:46px 30px;border:2px dashed #d3cbb6;border-radius:22px;background:#fffdf8;text-align:center}
 .bigdrop h2{font-size:28px}
@@ -355,7 +356,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
         <span class="tag" style="background:rgba(255,255,255,.18)" id="heroHello">Read · Understand · Learn</span>
         <h1 style="margin-top:12px">Read any PDF and understand every word</h1>
         <div class="arline">اقرأ أي ملف PDF وافهم كل كلمة بالعربية</div>
-        <p>Double‑click a word to see its Arabic or Chinese translation and English meaning. Select a sentence to translate it. Reading a Chinese PDF? Chinese is translated into English. Save new words and revise them with flashcards.</p>
+        <p>Double‑click a word to see its Arabic or Chinese translation and English meaning. Select a sentence to translate it. Reading a Chinese PDF? Chinese is translated into English or Arabic. Save new words and revise them with flashcards.</p>
         <div class="acts">
           <button class="btn" data-open style="background:#fff;color:var(--indigo);border-color:#fff">📂 Open a PDF</button>
           <button class="btn ghost" data-go="flashcards">🃏 Review flashcards</button>
@@ -367,7 +368,7 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
         <div class="stat" style="--c:var(--indigo);--cs:var(--indigo-s)"><div class="ic">🔍</div><div class="v" id="sLook">0</div><div class="l">Words looked up<span class="ar-ui">كلمات بحثت عنها</span></div></div>
         <div class="stat" style="--c:var(--teal);--cs:var(--teal-s)"><div class="ic">🌐</div><div class="v" id="sPass">0</div><div class="l">Sentences translated<span class="ar-ui">جمل مترجمة</span></div></div>
         <div class="stat" style="--c:var(--amber);--cs:var(--amber-s)"><div class="ic">★</div><div class="v" id="sSaved">0</div><div class="l">Words saved<span class="ar-ui">كلمات محفوظة</span></div></div>
-        <div class="stat" style="--c:var(--coral);--cs:var(--coral-s)"><div class="ic">📚</div><div class="v" id="sDocs">0</div><div class="l">PDFs opened<span class="ar-ui">ملفات مفتوحة</span></div></div>
+        <div class="stat" style="--c:var(--coral);--cs:var(--coral-s)"><div class="ic">📚</div><div class="v" id="sDocs">0</div><div class="l">Files used<span class="ar-ui">الملفات المستخدمة</span></div></div>
       </div>
 
       <div class="grid2">
@@ -412,14 +413,19 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
       </form>
     </div>
     <div class="hint hidden" id="readHint"><span><b>Double‑click</b> a word → translation + meaning</span><span><b>Select</b> a sentence → translate</span><span><b>★</b> save words for flashcards</span></div>
+    <div class="panel hidden" id="limitMsg" style="max-width:720px;margin:18px auto 0;padding:16px 18px;border-color:#f6c6c7;background:var(--coral-s);display:flex;gap:12px;align-items:flex-start">
+      <div style="font-size:26px">🚫</div><div style="flex:1;line-height:1.5"><b id="limitTitle">File limit reached</b><div id="limitText" style="color:#7a271a"></div></div>
+      <button class="ib" id="limitClose" title="Close">✕</button>
+    </div>
     <div class="bigdrop" id="bigDrop">
       <h2>Open a PDF to start reading</h2>
       <div class="ar">افتح ملف PDF لتبدأ القراءة</div>
       <p>Drag and drop a file here, or choose one from your device.</p>
+      <p id="quotaLine" style="font-weight:600;color:var(--indigo)"></p>
       <button class="btn pri" data-open>Choose a PDF</button>
       <div class="howto">
         <div style="background:var(--indigo-s)"><b>① Double‑click a word</b>See the Arabic or Chinese translation (with pinyin), English definition and pronunciation.</div>
-        <div style="background:var(--teal-s)"><b>② Select a sentence</b>Press “Translate” to read the whole sentence or paragraph in Arabic or Chinese. Chinese text is translated into English.</div>
+        <div style="background:var(--teal-s)"><b>② Select a sentence</b>Press “Translate” to read the whole sentence or paragraph in Arabic or Chinese. Chinese text is translated into English or Arabic.</div>
         <div style="background:var(--amber-s)"><b>③ Save & revise</b>Press ☆ to save a word, then practise it in Flashcards.</div>
       </div>
     </div>
@@ -466,7 +472,11 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
           <div class="panel-b">
             <label class="opt"><input type="radio" name="tlang" value="ar"><div><b>Arabic · العربية</b><span>English words and sentences are translated into Arabic.</span></div></label>
             <label class="opt"><input type="radio" name="tlang" value="zh"><div><b>Chinese · 中文</b><span>Simplified Chinese with pinyin.</span></div></label>
-            <small style="display:block;color:var(--muted);margin:2px 2px 6px;line-height:1.45">Chinese text in a PDF is always translated into English.</small>
+          </div>
+          <div class="panel-h" style="padding-top:2px"><h3>Translate Chinese into</h3></div>
+          <div class="panel-b">
+            <label class="opt"><input type="radio" name="zlang" value="en"><div><b>English</b><span>Chinese words and sentences in a PDF are translated into English, with pinyin.</span></div></label>
+            <label class="opt"><input type="radio" name="zlang" value="ar"><div><b>Arabic · العربية</b><span>Chinese words and sentences in a PDF are translated into Arabic, with pinyin.</span></div></label>
           </div>
           <div class="panel-h"><h3>Translation service</h3></div>
           <div class="panel-b">
@@ -525,6 +535,14 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
         <div class="panel" style="overflow:auto"><table class="vt" id="tTable"></table></div>
         <div class="panel sdetail hidden" id="tDetail"></div>
         <div class="panel" style="margin-top:18px">
+          <div class="panel-h"><h3>Limits for every student</h3></div>
+          <div class="panel-b"><form id="tLimForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+            <div class="field" style="margin:0"><label for="tMaxFiles">Files per student (in total)</label><input class="search" type="number" min="1" max="1000" id="tMaxFiles" style="width:160px"></div>
+            <div class="field" style="margin:0"><label for="tMaxPages">Pages shown per file</label><input class="search" type="number" min="1" max="2000" id="tMaxPages" style="width:160px"></div>
+            <button class="btn pri" type="submit">Save limits</button></form>
+            <div class="testout" id="tLimMsg"></div></div>
+        </div>
+        <div class="panel" style="margin-top:18px">
           <div class="panel-h"><h3>Change teacher PIN</h3></div>
           <div class="panel-b"><form id="tPinForm" style="display:flex;gap:8px;flex-wrap:wrap">
             <input class="search" type="password" id="tOld" placeholder="Current PIN" style="width:160px">
@@ -552,6 +570,11 @@ footer b{color:var(--ink);font-family:Fraunces,serif;font-weight:600}
       <div class="langpick">
         <label><input type="radio" name="llang" value="ar"> العربية · Arabic</label>
         <label><input type="radio" name="llang" value="zh"> 中文 · Chinese</label>
+      </div>
+      <div class="note" style="margin-top:10px;margin-bottom:-4px">Translate Chinese into:</div>
+      <div class="langpick">
+        <label><input type="radio" name="zl" value="en"> English</label>
+        <label><input type="radio" name="zl" value="ar"> العربية · Arabic</label>
       </div>
       <button class="btn pri" type="submit" id="loginBtn">Start reading →</button>
     </form>
@@ -597,7 +620,7 @@ const LS = {
   get(k, d){ try { const v = localStorage.getItem('lex_' + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
   set(k, v){ try { localStorage.setItem('lex_' + k, JSON.stringify(v)); } catch(e){} }
 };
-let settings = Object.assign({ engine:'mymemory', email:'', key:'', rate:1, autoSentence:false, lang:'ar' }, LS.get('settings', {}));
+let settings = Object.assign({ engine:'mymemory', email:'', key:'', rate:1, autoSentence:false, lang:'ar', zhTo:'en' }, LS.get('settings', {}));
 let session = LS.get('session', null);   // {id, name}
 const uk = k => k + '_' + (session ? session.id : 'x');
 let words = [], stats = { lookups:0, passages:0, docs:0, daily:{} }, recent = [];
@@ -688,7 +711,7 @@ function chunkText(text, max){
 }
 const HAS_ZH = /[㐀-鿿豈-﫿]/;
 const LANGS = { ar:{ name:'Arabic', code:'ar' }, zh:{ name:'Chinese', code:'zh-CN' }, en:{ name:'English', code:'en' } };
-const dirFor = t => HAS_ZH.test(t) ? { from:'zh', to:'en' } : { from:'en', to: settings.lang === 'zh' ? 'zh' : 'ar' };
+const dirFor = t => HAS_ZH.test(t) ? { from:'zh', to: settings.zhTo === 'ar' ? 'ar' : 'en' } : { from:'en', to: settings.lang === 'zh' ? 'zh' : 'ar' };
 const tcls = l => l === 'zh' ? 'zh' : l === 'en' ? 'en-t' : 'ar';
 let pinyinP = null;
 function loadPinyin(){
@@ -804,6 +827,7 @@ function tts(text, lang){
 }
 
 /* ================= PDF reader ================= */
+let fileInfo = { used:0, limits:{ max_files:10, max_pages:10 } }, pageCap = 0;
 let pdf = null, scale = 1.2, pages = [], observer = null, renderToken = 0, docId = null, saveTimer = null;
 if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
@@ -819,33 +843,55 @@ document.addEventListener('dragover', e => e.preventDefault());
 document.addEventListener('drop', e => { if (e.defaultPrevented) return; e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) openFile(f); });
 
 async function openFile(file){
+  if (!session) { toast('Please sign in first.'); return; }
   if (!/pdf$/i.test(file.type) && !/\.pdf$/i.test(file.name)) { toast('Please choose a PDF file.'); return; }
-  const id = file.name + '|' + file.size;
+  const key = file.name + '|' + file.size, id = session.id + '|' + key;
   const existing = await IDB.get(id);
-  const ok = await loadPdf(await file.arrayBuffer(), file.name, id, existing ? existing.lastPage : 1);
+  const ok = await loadPdf(await file.arrayBuffer(), file.name, id, key, existing ? existing.lastPage : 1);
   if (!ok) return;
   if (!existing) bump('docs');
   if (file.size < 60 * 1024 * 1024) {
-    await IDB.put({ id, name:file.name, size:file.size, pages:pdf.numPages, lastPage: existing ? existing.lastPage : 1, openedAt:Date.now(), blob:file });
-    const all = await IDB.all(); for (const r of all.slice(8)) await IDB.del(r.id);
+    await IDB.put({ id, key, sid:session.id, name:file.name, size:file.size, pages:pageCap, lastPage: existing ? existing.lastPage : 1, openedAt:Date.now(), blob:file });
+    const all = (await IDB.all()).filter(r => r.sid === session.id); for (const r of all.slice(8)) await IDB.del(r.id);
   }
 }
 async function openSaved(id){
   const rec = await IDB.get(id);
   if (!rec) { toast('This file is no longer stored. Please open it again.'); renderDashboard(); return; }
-  const ok = await loadPdf(await rec.blob.arrayBuffer(), rec.name, id, rec.lastPage || 1);
+  const ok = await loadPdf(await rec.blob.arrayBuffer(), rec.name, id, rec.key || (rec.name + '|' + rec.size), rec.lastPage || 1);
   if (ok) patchDoc(id, { openedAt:Date.now() });
 }
-async function loadPdf(buf, name, id, startPage){
+function showLimit(title, text){
+  $('limitTitle').textContent = title; $('limitText').textContent = text;
+  $('limitMsg').classList.remove('hidden'); go('reader'); window.scrollTo(0,0);
+}
+$('limitClose').onclick = () => $('limitMsg').classList.add('hidden');
+function updateQuota(){
+  const L = fileInfo.limits, left = Math.max(0, L.max_files - fileInfo.used);
+  $('quotaLine').textContent = left ? 'You can open ' + left + ' more new file' + (left === 1 ? '' : 's') + ' (up to ' + L.max_pages + ' pages are shown from each file).' : 'You have used all ' + L.max_files + ' files. You can still reopen your files, or ask your teacher to reset your count.';
+  if ($('sDocs')) $('sDocs').textContent = fileInfo.used + ' / ' + L.max_files;
+}
+async function loadPdf(buf, name, id, key, startPage){
   if (!window.pdfjsLib) { toast('The PDF library could not load. Check your internet connection.'); return false; }
-  hideCard(); hideChip();
+  hideCard(); hideChip(); $('limitMsg').classList.add('hidden');
+  let nd;
   try {
-    if (pdf) { try { pdf.destroy(); } catch(e){} }
-    pdf = await pdfjsLib.getDocument({ data:new Uint8Array(buf), isEvalSupported:false, cMapUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/', cMapPacked:true, standardFontDataUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/' }).promise;
+    nd = await pdfjsLib.getDocument({ data:new Uint8Array(buf), isEvalSupported:false, cMapUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/', cMapPacked:true, standardFontDataUrl:'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/' }).promise;
   } catch (err) {
     toast(err && err.name === 'PasswordException' ? 'This PDF is password‑protected.' : 'Could not open this PDF.');
     return false;
   }
+  let res;
+  try { res = await rpc('lex_open_file', { p_sid:session.id, p_key:key, p_name:name, p_pages:nd.numPages }); if (!res) throw new Error('no answer'); }
+  catch(e){ try { nd.destroy(); } catch(x){} toast('Could not check your file limit. Check your internet connection and try again.'); return false; }
+  fileInfo = { used:res.used, limits:{ max_files:res.max_files, max_pages:res.max_pages } }; updateQuota();
+  if (!res.allowed) {
+    try { nd.destroy(); } catch(x){}
+    showLimit('File limit reached', 'You have opened ' + res.max_files + ' different files, which is the limit for your account. You can still reopen your files from the Dashboard. To open new files, ask your teacher to reset your count.');
+    return false;
+  }
+  if (pdf) { try { pdf.destroy(); } catch(e){} }
+  pdf = nd; pageCap = Math.min(pdf.numPages, res.max_pages);
   docId = id;
   go('reader');
   $('docName').textContent = name.replace(/\.pdf$/i,'');
@@ -864,7 +910,7 @@ async function buildPages(){
   if (observer) observer.disconnect();
   observer = new IntersectionObserver(es => { es.forEach(en => { if (en.isIntersecting) renderPage(+en.target.dataset.n); }); }, { rootMargin:'700px 0px' });
   $('zVal').textContent = Math.round(scale * 100) + '%';
-  for (let n = 1; n <= pdf.numPages; n++) {
+  for (let n = 1; n <= pageCap; n++) {
     if (token !== renderToken) return;
     const p = await pdf.getPage(n);
     const vp = p.getViewport({ scale });
@@ -875,6 +921,11 @@ async function buildPages(){
     viewer.appendChild(div);
     pages[n] = { div, page:p, rendered:false };
     observer.observe(div);
+  }
+  if (pdf.numPages > pageCap) {
+    const note = document.createElement('div'); note.className = 'capnote';
+    note.innerHTML = '📄 This file has <b>' + pdf.numPages + ' pages</b>. Only the first <b>' + pageCap + ' pages</b> are shown — that is the page limit set by your teacher.';
+    viewer.appendChild(note);
   }
   updatePageInfo();
 }
@@ -912,7 +963,7 @@ function currentPage(){
 function updatePageInfo(){
   if (!pdf || !$('v-reader').classList.contains('show')) return;
   const cur = currentPage();
-  $('pInfo').textContent = 'Page ' + cur + ' of ' + pdf.numPages;
+  $('pInfo').textContent = 'Page ' + cur + ' of ' + pageCap + (pdf.numPages > pageCap ? ' (limit)' : '');
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => { if (docId) patchDoc(docId, { lastPage:cur }); }, 800);
 }
@@ -961,7 +1012,7 @@ function selectionInfo(){
 $('viewer').addEventListener('dblclick', () => setTimeout(() => { const i = selectionInfo(); if (i) { hideChip(); lookup(i.term, i.context, i.rect); } }, 10));
 function chipLabel(t){
   const d = dirFor(t), p = isPassage(t);
-  if (d.from === 'zh') return '🌐 Translate to English';
+  if (d.from === 'zh') return '🌐 Translate to ' + LANGS[d.to].name + (d.to === 'ar' ? ' · ترجم' : '');
   if (d.to === 'zh') return p ? '🌐 Translate to Chinese' : '🔍 Translate';
   return p ? '🌐 Translate to Arabic · ترجم' : '🔍 Translate · ترجم';
 }
@@ -1179,9 +1230,9 @@ async function renderDashboard(){
   $('sLook').textContent = stats.lookups || 0;
   $('sPass').textContent = stats.passages || 0;
   $('sSaved').textContent = words.length;
-  $('sDocs').textContent = stats.docs || 0;
+  updateQuota();
   // docs
-  const docs = await IDB.all();
+  const docs = session ? (await IDB.all()).filter(r => r.sid === session.id) : [];
   const L = $('docList');
   if (!docs.length) L.innerHTML = '<div class="emptyline">No PDFs yet. Open one to start reading — it will appear here so you can continue later.</div>';
   else L.innerHTML = docs.slice(0,5).map((d,i) => {
@@ -1305,11 +1356,13 @@ function renderSettings(){
   $('sRate').value = settings.rate; $('sRateV').textContent = (+settings.rate).toFixed(1);
   $('sAuto').checked = !!settings.autoSentence;
   document.querySelectorAll('input[name=tlang]').forEach(r => r.checked = r.value === (settings.lang || 'ar'));
+  document.querySelectorAll('input[name=zlang]').forEach(r => r.checked = r.value === (settings.zhTo || 'en'));
   $('sWho').textContent = session ? session.name : '';
   $('fEmail').classList.toggle('hidden', settings.engine !== 'mymemory');
   $('fKey').classList.toggle('hidden', settings.engine !== 'google');
 }
 document.querySelectorAll('input[name=tlang]').forEach(r => r.onchange = () => { settings.lang = r.value; saveSettings(); syncLoginLang(); toast(r.value === 'zh' ? 'Translating into Chinese' : 'Translating into Arabic'); });
+document.querySelectorAll('input[name=zlang]').forEach(r => r.onchange = () => { settings.zhTo = r.value; saveSettings(); syncLoginLang(); toast(r.value === 'ar' ? 'Chinese → Arabic' : 'Chinese → English'); });
 document.querySelectorAll('input[name=engine]').forEach(r => r.onchange = () => { settings.engine = r.value; saveSettings(); renderSettings(); });
 $('sEmail').onchange = () => { settings.email = $('sEmail').value.trim(); saveSettings(); toast('Saved'); };
 $('sKey').onchange = () => { settings.key = $('sKey').value.trim(); saveSettings(); toast('Saved'); };
@@ -1338,7 +1391,7 @@ function twoTap(btn, msg, fn){
 let tt; function toast(m){ const t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2400); }
 
 /* ================= login ================= */
-function syncLoginLang(){ document.querySelectorAll('input[name=llang]').forEach(r => r.checked = r.value === (settings.lang || 'ar')); }
+function syncLoginLang(){ document.querySelectorAll('input[name=llang]').forEach(r => r.checked = r.value === (settings.lang || 'ar')); document.querySelectorAll('input[name=zl]').forEach(r => r.checked = r.value === (settings.zhTo || 'en')); }
 syncLoginLang();
 function applySession(){
   $('meBox').classList.toggle('hidden', !session);
@@ -1351,6 +1404,7 @@ async function refreshFromServer(){
     if (!d) { signOut(); return; }
     words = d.words || [];
     stats = Object.assign({ lookups:0, passages:0, docs:0, daily:{} }, d.stats || {});
+    if (d.files) { fileInfo = { used:d.files.used, limits:d.files.limits }; updateQuota(); }
     saveWords(); LS.set(uk('stats'), stats); setSync();
     const v = location.hash.slice(1) || 'dashboard';
     if (v === 'dashboard') renderDashboard(); else if (v === 'vocabulary') renderVocab(); else if (v === 'flashcards') startDeck(false);
@@ -1359,7 +1413,7 @@ async function refreshFromServer(){
 $('loginForm').onsubmit = async e => {
   e.preventDefault();
   const name = $('loginName').value.replace(/\s+/g,' ').trim();
-  const ll = document.querySelector('input[name=llang]:checked'); if (ll) { settings.lang = ll.value; saveSettings(); }
+  const ll = document.querySelector('input[name=llang]:checked'), zl = document.querySelector('input[name=zl]:checked'); if (ll) settings.lang = ll.value; if (zl) settings.zhTo = zl.value; saveSettings();
   $('loginErr').textContent = '';
   if (name.length < 2) { $('loginErr').textContent = 'Please type your full name.'; return; }
   $('loginBtn').disabled = true; $('loginBtn').textContent = 'Signing in…';
@@ -1385,7 +1439,7 @@ $('toTeacher').onclick = () => { $('login').classList.remove('show'); go('teache
 
 /* ================= teacher ================= */
 let tPin = sessionStorage.getItem ? (() => { try { return sessionStorage.getItem('lex_tpin'); } catch(e){ return null; } })() : null;
-let tData = [];
+let tData = [], tLimits = { max_files:10, max_pages:10 };
 function openTeacher(){
   if (tPin) loadTeacher(); else { $('tLock').classList.remove('hidden'); $('tMain').classList.add('hidden'); setTimeout(() => $('tPin').focus(), 50); }
 }
@@ -1394,6 +1448,8 @@ async function loadTeacher(fromForm){
   $('tErr').textContent = fromForm ? 'Checking…' : '';
   try {
     tData = await rpc('lex_teacher_overview', { p_pin:tPin }) || [];
+    try { tLimits = await rpc('lex_limits', {}) || tLimits; } catch(e){}
+    $('tMaxFiles').value = tLimits.max_files; $('tMaxPages').value = tLimits.max_pages;
     try { sessionStorage.setItem('lex_tpin', tPin); } catch(e){}
     $('tLock').classList.add('hidden'); $('tMain').classList.remove('hidden'); $('tErr').textContent = ''; $('tPin').value = '';
     renderTeacher();
@@ -1411,12 +1467,13 @@ function renderTeacher(){
   $('tLooks').textContent = tData.reduce((a,s) => a + (+s.lookups || 0) + (+s.passages || 0), 0);
   const list = tData.filter(s => !q || s.name.toLowerCase().includes(q));
   if (!tData.length) { $('tTable').innerHTML = '<tr><td><div class="emptyline" style="padding:40px">No students yet. When students sign in with their name, they will appear here.</div></td></tr>'; return; }
-  $('tTable').innerHTML = '<thead><tr><th>Student</th><th>Words saved</th><th>Mastered</th><th>Look‑ups</th><th>Translations</th><th>This week</th><th>Last active</th><th></th></tr></thead><tbody>' +
+  $('tTable').innerHTML = '<thead><tr><th>Student</th><th>Words saved</th><th>Mastered</th><th>Look‑ups</th><th>Translations</th><th>This week</th><th>Files</th><th>Last active</th><th></th></tr></thead><tbody>' +
     list.map(s => '<tr><td><div class="w">' + esc(s.name) + '</div><div class="p" style="color:var(--muted);font-style:normal">joined ' + new Date(s.created_at).toLocaleDateString() + '</div></td>' +
       '<td><b>' + s.words + '</b></td><td>' + s.mastered + '</td><td>' + s.lookups + '</td><td>' + s.passages + '</td>' +
       '<td><span class="lvl" style="background:' + (s.week ? 'var(--teal-s);color:var(--teal)' : '#f2efe6;color:var(--muted)') + '">' + s.week + '</span></td>' +
+      '<td style="white-space:nowrap"><b>' + (s.files || 0) + '</b> / ' + tLimits.max_files + '</td>' +
       '<td style="white-space:nowrap">' + timeAgo(new Date(s.last_seen).getTime()) + '</td>' +
-      '<td class="act"><button class="btn sm" data-tview="' + s.id + '">View words</button> <button class="ib" data-tdel="' + s.id + '" title="Delete student">🗑</button></td></tr>').join('') + '</tbody>';
+      '<td class="act"><button class="btn sm" data-tview="' + s.id + '">Details</button> <button class="ib" data-tdel="' + s.id + '" title="Delete student">🗑</button></td></tr>').join('') + '</tbody>';
 }
 $('tSearch').oninput = renderTeacher;
 $('tRefresh').onclick = () => loadTeacher();
@@ -1428,13 +1485,26 @@ $('tTable').addEventListener('click', async e => {
     D.classList.remove('hidden'); D.innerHTML = '<div class="panel-b"><div class="loading"><div class="spin"></div>Loading…</div></div>';
     D.scrollIntoView({ behavior:'smooth', block:'start' });
     try {
-      const ws = await rpc('lex_teacher_words', { p_pin:tPin, p_sid:s.id }) || [];
-      D.innerHTML = '<div class="panel-h"><h3>' + esc(s.name) + ' — saved words (' + ws.length + ')</h3><button class="ib" id="tDetClose">✕</button></div><div class="panel-b" style="overflow:auto">' +
+      const [ws, fs] = await Promise.all([rpc('lex_teacher_words', { p_pin:tPin, p_sid:s.id }), rpc('lex_teacher_files', { p_pin:tPin, p_sid:s.id })]).then(r => r.map(x => x || []));
+      const usedN = fs.filter(f => f.counted).length;
+      D.innerHTML = '<div class="panel-h"><h3>' + esc(s.name) + '</h3><button class="ib" id="tDetClose">✕</button></div>' +
+        '<div class="panel-b"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><b style="font-family:Fraunces,serif;font-size:16px">Files · ' + usedN + ' / ' + tLimits.max_files + ' used</b><span class="spacer"></span>' +
+        '<button class="btn sm" data-treset="' + s.id + '">↺ Reset file count</button></div>' +
+        (fs.length ? '<table class="vt"><thead><tr><th>File</th><th>Pages</th><th>First opened</th><th>Counts?</th></tr></thead><tbody>' +
+          fs.map(f => '<tr><td>' + esc(f.name) + '</td><td>' + f.pages + (f.pages > tLimits.max_pages ? ' <span class="p" style="color:var(--muted)">(first ' + tLimits.max_pages + ' shown)</span>' : '') + '</td><td style="white-space:nowrap">' + new Date(f.first).toLocaleDateString() + '</td><td>' + (f.counted ? '<span class="lvl" style="background:var(--indigo-s);color:var(--indigo)">Yes</span>' : '<span class="lvl" style="background:#f2efe6;color:var(--muted)">Reset</span>') + '</td></tr>').join('') + '</tbody></table>'
+          : '<div class="emptyline">No files opened yet.</div>') + '</div>' +
+        '<div class="panel-h" style="padding-top:0"><h3 style="font-size:16px">Saved words (' + ws.length + ')</h3></div><div class="panel-b" style="overflow:auto">' +
         (ws.length ? '<table class="vt"><thead><tr><th>Word</th><th>Translation</th><th>Meaning</th><th>Level</th></tr></thead><tbody>' +
           ws.map(w => { const k = w.known || 0, lv = k >= 3 ? ['Mastered','var(--teal-s)','var(--teal)'] : k >= 1 ? ['Learning','var(--amber-s)','#a15c00'] : ['New','var(--indigo-s)','var(--indigo)'];
             return '<tr><td><div class="w">' + esc(w.w) + '</div><div class="p">' + esc(w.pos || '') + '</div></td><td class="tcell">' + trHTML(w) + '</td><td class="d">' + esc(w.def || '') + '</td><td><span class="lvl" style="background:' + lv[1] + ';color:' + lv[2] + '">' + lv[0] + '</span></td></tr>'; }).join('') +
           '</tbody></table>' : '<div class="emptyline">This student has not saved any words yet.</div>') + '</div>';
       $('tDetClose').onclick = () => D.classList.add('hidden');
+      D.querySelector('[data-treset]').onclick = async ev => {
+        const b = ev.currentTarget;
+        if (!b.dataset.arm) { b.dataset.arm = '1'; b.textContent = 'Tap again to reset'; setTimeout(() => { if (b.isConnected) { delete b.dataset.arm; b.textContent = '↺ Reset file count'; } }, 3500); return; }
+        try { await rpc('lex_teacher_reset_files', { p_pin:tPin, p_sid:s.id }); toast(s.name + ' can open ' + tLimits.max_files + ' new files'); await loadTeacher(); const nb = $('tTable').querySelector('[data-tview="' + s.id + '"]'); if (nb) nb.click(); }
+        catch(err){ toast(err.message); }
+      };
     } catch(err){ D.innerHTML = '<div class="panel-b err">' + esc(err.message) + '</div>'; }
   }
   const d = e.target.closest('[data-tdel]');
@@ -1447,10 +1517,15 @@ $('tTable').addEventListener('click', async e => {
 });
 $('tCsv').onclick = () => {
   const q = s => '"' + String(s == null ? '' : s).replace(/"/g,'""') + '"';
-  const rows = [['Student','Words saved','Mastered','Look-ups','Translations','This week','Last active']].concat(tData.map(s => [s.name, s.words, s.mastered, s.lookups, s.passages, s.week, new Date(s.last_seen).toLocaleString()]));
+  const rows = [['Student','Words saved','Mastered','Look-ups','Translations','This week','Files used','Last active']].concat(tData.map(s => [s.name, s.words, s.mastered, s.lookups, s.passages, s.week, s.files || 0, new Date(s.last_seen).toLocaleString()]));
   const blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\r\n')], { type:'text/csv;charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'students-progress.csv';
   document.body.appendChild(a); a.click(); a.remove();
+};
+$('tLimForm').onsubmit = async e => {
+  e.preventDefault(); const m = $('tLimMsg'); m.textContent = 'Saving…';
+  try { tLimits = await rpc('lex_teacher_set_limits', { p_pin:tPin, p_files:+$('tMaxFiles').value, p_pages:+$('tMaxPages').value }); m.innerHTML = '✅ Saved: ' + tLimits.max_files + ' files per student, ' + tLimits.max_pages + ' pages per file.'; renderTeacher(); }
+  catch(err){ m.innerHTML = '<span class="err">' + esc(err.message) + '</span>'; }
 };
 $('tPinForm').onsubmit = async e => {
   e.preventDefault(); const m = $('tPinMsg'); m.textContent = 'Saving…';

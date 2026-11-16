@@ -744,6 +744,8 @@ function scriptOk(t, lang){
   if (lang === 'zh') return HAS_ZH.test(t) && !/[A-Za-z]{3,}/.test(t);
   return /[A-Za-z]/.test(t) && !HAS_ZH.test(t);
 }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+let emailRejected = false;
 async function translate(text, from, to){
   text = text.trim(); from = from || 'en'; to = to || 'ar';
   const key = settings.engine + '|' + from + '|' + to + '|' + text;
@@ -761,11 +763,18 @@ async function translate(text, from, to){
   } else {
     const chunks = chunkText(text, from === 'zh' ? 150 : 480), outs = []; let alts = [];
     for (const c of chunks) {
-      const url = 'https://api.mymemory.translated.net/get?langpair=' + LANGS[from].code + '%7C' + LANGS[to].code + '&q=' + encodeURIComponent(c) + (settings.email ? '&de=' + encodeURIComponent(settings.email) : '');
-      const r = await fetch(url);
-      const j = await r.json().catch(() => null);
+      const base = 'https://api.mymemory.translated.net/get?langpair=' + LANGS[from].code + '%7C' + LANGS[to].code + '&q=' + encodeURIComponent(c);
+      const useEmail = settings.email && EMAIL_RE.test(settings.email) && !emailRejected;
+      let r = await fetch(base + (useEmail ? '&de=' + encodeURIComponent(settings.email) : ''));
+      let j = await r.json().catch(() => null);
+      if (useEmail && j && /INVALID EMAIL/i.test((j.responseDetails || '') + ' ' + ((j.responseData && j.responseData.translatedText) || ''))) {
+        emailRejected = true;
+        toast('MyMemory did not accept the email in Settings, so it is translating without it.');
+        r = await fetch(base); j = await r.json().catch(() => null);
+      }
       const status = j && +j.responseStatus;
       const t = j && j.responseData && j.responseData.translatedText || '';
+      if (/INVALID EMAIL/i.test(t)) throw new Error('Translation failed. Please try again.');
       if (!r.ok || !j || status === 429 || /MYMEMORY WARNING|QUOTA/i.test(t)) throw new Error('The free daily translation limit has been reached. Add an email in Settings to raise it, or try again tomorrow.');
       if (status && status !== 200) throw new Error(j.responseDetails || 'Translation failed.');
       outs.push(t);
@@ -1374,7 +1383,7 @@ function renderSettings(){
 document.querySelectorAll('input[name=tlang],input[name=qlang]').forEach(r => r.onchange = () => setLang('lang', r.value));
 document.querySelectorAll('input[name=zlang],input[name=qzh]').forEach(r => r.onchange = () => setLang('zhTo', r.value));
 document.querySelectorAll('input[name=engine]').forEach(r => r.onchange = () => { settings.engine = r.value; saveSettings(); renderSettings(); });
-$('sEmail').onchange = () => { settings.email = $('sEmail').value.trim(); saveSettings(); toast('Saved'); };
+$('sEmail').onchange = () => { const v = $('sEmail').value.trim(); if (v && !EMAIL_RE.test(v)) { toast('That is not a valid email address — it was not saved.'); $('sEmail').value = settings.email; return; } settings.email = v; emailRejected = false; saveSettings(); toast(v ? 'Saved' : 'Email removed'); };
 $('sKey').onchange = () => { settings.key = $('sKey').value.trim(); saveSettings(); toast('Saved'); };
 $('sRate').oninput = () => { settings.rate = +$('sRate').value; $('sRateV').textContent = settings.rate.toFixed(1); saveSettings(); };
 $('sAuto').onchange = () => { settings.autoSentence = $('sAuto').checked; saveSettings(); };
